@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  /* Ensure all interactive elements meet 44px minimum touch target */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@layer components {
+  .btn-given {
+    @apply bg-given text-white font-bold rounded-xl flex items-center justify-center min-h-[56px] px-6 text-lg active:scale-95 transition-transform;
+  }
+  .btn-refused {
+    @apply bg-refused text-white font-bold rounded-xl flex items-center justify-center min-h-[56px] px-6 text-lg active:scale-95 transition-transform;
+  }
+  .badge-given   { @apply bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full; }
+  .badge-refused { @apply bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded-full; }
+  .badge-pending { @apply bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full; }
+}
+
+@layer utilities {
+  /* Hide scrollbar on nav strip but keep it scrollable */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  /* iOS safe-area bottom padding for devices with home bar */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
