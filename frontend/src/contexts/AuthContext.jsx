@@ -13,8 +13,9 @@ export function AuthProvider({ children }) {
   const [loading, setLoading]         = useState(true)
   const [showTimeoutWarn, setShowTimeoutWarn] = useState(false)
 
-  const warnTimer    = useRef(null)
-  const logoutTimer  = useRef(null)
+  const warnTimer      = useRef(null)
+  const logoutTimer    = useRef(null)
+  const isHydrating    = useRef(false)
 
   // ── Timeout management ────────────────────────────────────
   const clearTimers = useCallback(() => {
@@ -42,72 +43,76 @@ export function AuthProvider({ children }) {
   }, [session, resetTimers, clearTimers])
 
   // ── Restore session on mount ──────────────────────────────
+  // Only use onAuthStateChange — it fires INITIAL_SESSION immediately with
+  // any existing session, so a separate getSession() call is redundant and
+  // causes concurrent lock contention on the Supabase navigator lock.
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session) {
-        try {
-          await hydrateUser(session)
-        } catch (err) {
-          console.error('[AuthContext] hydrateUser failed on restore:', err.message)
-          setUser(null)
-          setSession(null)
-        }
-      }
-      setLoading(false)
-    })
+    let mounted = true
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+      if (!mounted) return
+
+      if (newSession) {
         try {
-          await hydrateUser(session)
+          await hydrateUser(newSession)
         } catch (err) {
           console.error('[AuthContext] hydrateUser failed on auth change:', err.message)
-          setUser(null)
-          setSession(null)
+          if (mounted) { setUser(null); setSession(null) }
         }
       } else {
-        setUser(null)
-        setSession(null)
+        if (mounted) { setUser(null); setSession(null) }
       }
+
+      if (mounted) setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   async function hydrateUser(session) {
-    setSession(session)
+    if (isHydrating.current) return
+    isHydrating.current = true
 
-    // Always read the full profile from DB — this gives us full_name + role
-    // regardless of whether app_metadata.role is already in the JWT.
-    const { data: profile } = await supabase
-      .from('users')
-      .select('id, full_name, role')
-      .eq('id', session.user.id)
-      .single()
+    try {
+      setSession(session)
 
-    if (profile) {
-      setUser(profile)
+      // Always read the full profile from DB — this gives us full_name + role
+      // regardless of whether app_metadata.role is already in the JWT.
+      const { data: profile } = await supabase
+        .from('users')
+        .select('id, full_name, role')
+        .eq('id', session.user.id)
+        .single()
 
-      // Sync role into app_metadata in the background so that RLS policies
-      // using get_auth_role() work via the JWT fast-path on the next request.
-      // Fire-and-forget — failure here does not affect the UX because
-      // migration 013 also added a DB-fallback to get_auth_role().
-      if (!session.user?.app_metadata?.role) {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
-        fetch(`${backendUrl}/api/auth/sync-role`, {
-          method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        }).catch(() => {/* non-critical */})
+      if (profile) {
+        setUser(profile)
+
+        // Sync role into app_metadata in the background so that RLS policies
+        // using get_auth_role() work via the JWT fast-path on the next request.
+        // Fire-and-forget — failure here does not affect the UX because
+        // migration 013 also added a DB-fallback to get_auth_role().
+        if (!session.user?.app_metadata?.role) {
+          const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
+          fetch(`${backendUrl}/api/auth/sync-role`, {
+            method:  'POST',
+            headers: {
+              'Content-Type':  'application/json',
+              'Authorization': `Bearer ${session.access_token}`,
+            },
+          }).catch(() => {/* non-critical */})
+        }
+        return
       }
-      return
-    }
 
-    // No profile found — sign out and surface a clear error
-    await supabase.auth.signOut()
-    throw new Error('Account not found. Please contact an administrator to set up your profile.')
+      // No profile found — sign out and surface a clear error
+      await supabase.auth.signOut()
+      throw new Error('Account not found. Please contact an administrator to set up your profile.')
+    } finally {
+      isHydrating.current = false
+    }
   }
 
   // ── Auth actions ──────────────────────────────────────────
