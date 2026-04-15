@@ -16,7 +16,7 @@ test.describe('Login page', () => {
   })
 
   test('renders the CareSync branding', async ({ page }) => {
-    await expect(page.getByText('CareSync')).toBeVisible()
+    await expect(page.getByText('CareSync').first()).toBeVisible()
     await expect(page.getByText('Care Home Management')).toBeVisible()
   })
 

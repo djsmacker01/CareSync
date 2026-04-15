@@ -131,11 +131,11 @@ export default function VisitorsPage() {
         </div>
       )}
 
-      {/* ── Currently in building ── */}
+      {/* ── Active Visitors ── */}
       {active !== null && (
         <section className="space-y-3">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-gray-800">Currently in building</h2>
+            <h2 className="text-base font-bold text-gray-800">Currently Signed In</h2>
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
               activeCount > 0
                 ? 'bg-orange-100 text-orange-700'

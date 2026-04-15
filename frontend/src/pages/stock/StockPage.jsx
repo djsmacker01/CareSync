@@ -186,17 +186,20 @@ export default function StockPage() {
                     status === 'critical' ? 'bg-refused/5' :
                     status === 'low'      ? 'bg-pending/5' : ''
                   }`}>
-                  {/* Top row: name + level badge */}
+                  {/* Top row: name (clickable → history) + level badge */}
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-gray-900 text-sm leading-snug">
+                    <button
+                      onClick={() => setHistory(s.id)}
+                      className="flex-1 min-w-0 text-left"
+                    >
+                      <div className="font-semibold text-gray-900 text-sm leading-snug hover:text-teal transition-colors">
                         {s.medications?.medication_name}
                         <span className="font-normal text-gray-400 ml-1">{s.medications?.dosage}</span>
                       </div>
                       <div className="text-xs text-gray-400 mt-0.5">
                         {s.medications?.frequency} · Reorder at: {s.reorder_threshold} {s.unit}
                       </div>
-                    </div>
+                    </button>
                     <div className="shrink-0">
                       <StockLevelBadge qty={s.current_quantity} threshold={s.reorder_threshold} unit={s.unit} />
                     </div>
@@ -206,7 +209,7 @@ export default function StockPage() {
                     <button
                       onClick={() => setHistory(s.id)}
                       className="min-h-[36px] px-3 rounded-lg border border-gray-200 text-gray-400 text-xs font-medium hover:bg-gray-50 transition-colors"
-                      title="View history"
+                      title="View transaction history"
                     >
                       📋 History
                     </button>
