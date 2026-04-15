@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
 import './index.css'
@@ -16,10 +15,11 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   })
 }
 
+// StrictMode intentionally double-invokes effects in development, which causes
+// two simultaneous onAuthStateChange subscriptions that race for the Supabase
+// navigator lock. Omitting it here has zero effect on the production build.
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </StrictMode>,
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
 )
