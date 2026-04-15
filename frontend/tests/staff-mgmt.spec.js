@@ -33,12 +33,10 @@ test.describe('Staff page', () => {
     await page.getByRole('button', { name: /add staff|new staff|add user/i }).click()
     await expect(
       page.getByRole('dialog')
-        .or(page.getByLabel(/name/i))
     ).toBeVisible({ timeout: 8_000 })
-    // Should have role selector
+    // Should have role selector (combobox = <select>)
     await expect(
       page.getByRole('combobox')
-        .or(page.getByLabel(/role/i))
     ).toBeVisible({ timeout: 8_000 })
   })
 

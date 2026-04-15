@@ -73,7 +73,7 @@ export default function MARPage() {
       <div className="flex flex-wrap items-start justify-between gap-y-1 gap-x-3">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900">Digital MAR</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900">Medication Administration Record</h1>
             <LiveBadge status={liveStatus} />
           </div>
           <p className="text-sm text-gray-400">
@@ -105,7 +105,13 @@ export default function MARPage() {
             <span className="text-sm font-bold text-gray-700">Overall progress</span>
             <span className="text-sm font-bold text-teal">{data.overallGiven}/{data.overallTotal} medications</span>
           </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            className="h-3 bg-gray-100 rounded-full overflow-hidden"
+          >
             <div
               className="h-full bg-teal rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
@@ -113,7 +119,7 @@ export default function MARPage() {
           </div>
           <div className="flex justify-between text-xs text-gray-400 mt-1.5">
             <span>{pct}% complete</span>
-            <span>{data.clients.filter(c => c.pending === 0).length}/{data.clients.length} clients done</span>
+            <span>{data.clients.filter(c => c.pending === 0).length} of {data.clients.length} clients done</span>
           </div>
         </div>
       )}

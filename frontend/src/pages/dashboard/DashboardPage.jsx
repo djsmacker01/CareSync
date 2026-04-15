@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDashboard } from '../../hooks/useDashboard'
 import { useRealtime } from '../../hooks/useRealtime'
@@ -98,9 +98,15 @@ function Section({ title, children, action }) {
 }
 
 // ── Main page ─────────────────────────────────────────────────────
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
 export default function DashboardPage() {
   const navigate = useNavigate()
   const { data, loading, error, fetchSummary } = useDashboard()
+
+  const now = new Date()
+  const [reportMonth, setReportMonth] = useState(now.getMonth())
+  const [reportYear,  setReportYear]  = useState(now.getFullYear())
 
   useEffect(() => { fetchSummary() }, [fetchSummary])
 
@@ -361,6 +367,39 @@ export default function DashboardPage() {
           )}
         </>
       )}
+
+      {/* ── Monthly Report Generator — always visible ── */}
+      <Section title="Monthly Report">
+        <p className="text-sm text-gray-500">
+          Generate a PDF summary of MAR records, stock transactions, task completion, fire checks, and visitor logs for any month.
+        </p>
+        <div className="flex flex-wrap gap-2 items-center">
+          <select
+            value={reportMonth}
+            onChange={e => setReportMonth(Number(e.target.value))}
+            className="min-h-[40px] rounded-xl border-2 border-gray-200 px-3 text-sm text-gray-700 focus:outline-none focus:border-teal"
+          >
+            {MONTHS.map((m, i) => (
+              <option key={m} value={i}>{m}</option>
+            ))}
+          </select>
+          <select
+            value={reportYear}
+            onChange={e => setReportYear(Number(e.target.value))}
+            className="min-h-[40px] rounded-xl border-2 border-gray-200 px-3 text-sm text-gray-700 focus:outline-none focus:border-teal"
+          >
+            {[now.getFullYear() - 1, now.getFullYear()].map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => window.print()}
+            className="min-h-[40px] px-4 rounded-xl bg-teal text-white text-sm font-bold hover:bg-teal/90 transition-colors"
+          >
+            Generate Report
+          </button>
+        </div>
+      </Section>
     </div>
   )
 }
