@@ -40,6 +40,7 @@ test.describe('Manager Dashboard', () => {
     await expect(
       page.getByRole('button', { name: /report|generate|export/i })
         .or(page.getByText(/monthly report/i))
+        .first()
     ).toBeVisible({ timeout: 10_000 })
   })
 

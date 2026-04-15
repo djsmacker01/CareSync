@@ -29,21 +29,17 @@ test.describe('Fire Safety page', () => {
   })
 
   test('clicking a check opens the log modal', async ({ page }) => {
-    const checkItem = page.getByText(/fire door|extinguisher|alarm test/i).first()
-    if (await checkItem.isVisible()) {
-      await checkItem.click()
-      await expect(
-        page.getByRole('dialog')
-          .or(page.getByText(/pass|fail|action required/i))
-          .or(page.getByRole('button', { name: /log|complete|submit/i }))
-      ).toBeVisible({ timeout: 8_000 })
+    const logBtn = page.getByRole('button', { name: /^log check|^⚠ log check/i }).first()
+    if (await logBtn.isVisible()) {
+      await logBtn.click()
+      await expect(page.getByRole('dialog')).toBeVisible({ timeout: 8_000 })
     }
   })
 
   test('log modal has Pass / Fail / Action Required options', async ({ page }) => {
-    const checkItem = page.getByRole('button').filter({ hasText: /fire door|extinguisher|alarm/i }).first()
-    if (await checkItem.isVisible()) {
-      await checkItem.click()
+    const logBtn = page.getByRole('button', { name: /^log check|^⚠ log check/i }).first()
+    if (await logBtn.isVisible()) {
+      await logBtn.click()
       await expect(page.getByText(/pass/i).first()).toBeVisible({ timeout: 8_000 })
       await expect(page.getByText(/fail/i).first()).toBeVisible({ timeout: 8_000 })
     }

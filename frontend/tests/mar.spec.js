@@ -49,6 +49,7 @@ test.describe('MAR page', () => {
       await expect(
         page.getByRole('button', { name: /given/i })
           .or(page.getByText(/Amlodipine|Aspirin|Metformin|Bisoprolol|Warfarin/i))
+          .first()
       ).toBeVisible({ timeout: 10_000 })
     }
   })
