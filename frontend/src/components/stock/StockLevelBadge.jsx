@@ -21,7 +21,7 @@ const ICONS = { critical: '🔴', low: '🟡', ok: '🟢' }
 export default function StockLevelBadge({ qty, threshold, unit, showIcon = true }) {
   const status = stockStatus(qty, threshold)
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${STYLES[status]}`}>
+    <span className={`stock-badge inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${STYLES[status]}`}>
       {showIcon && <span>{ICONS[status]}</span>}
       {qty} {unit}
     </span>

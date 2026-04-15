@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { ROLE_HOME } from '../components/ProtectedRoute'
 import { supabase } from '../lib/supabase'
@@ -59,7 +59,7 @@ function PinKeypad({ value, onChange, maxLength = 6 }) {
 
 // ── Login Page ─────────────────────────────────────────────
 export default function Login() {
-  const { signInWithPassword, signInWithPin, user } = useAuth()
+  const { signInWithPassword, signInWithPin, user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -79,8 +79,8 @@ export default function Login() {
   // Redirect when user becomes available — done in an effect to avoid
   // side-effects during render (which React 18 Strict Mode double-invokes).
   useEffect(() => {
-    if (user) navigate(ROLE_HOME[user.role] || '/mar', { replace: true })
-  }, [user, navigate])
+    if (!authLoading && user) navigate(ROLE_HOME[user.role] || '/mar', { replace: true })
+  }, [user, authLoading, navigate])
 
   async function handlePasswordSubmit(e) {
     e.preventDefault()
@@ -141,6 +141,22 @@ export default function Login() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // While auth is restoring from storage, show a neutral loading screen so
+  // the login form never briefly flashes for users who are already signed in.
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-navy flex items-center justify-center">
+        <div className="text-white/60 text-sm animate-pulse">Loading…</div>
+      </div>
+    )
+  }
+
+  // Synchronous redirect — if <Navigate> renders, React Router redirects
+  // before the login form is ever painted (faster than a useEffect).
+  if (user) {
+    return <Navigate to={ROLE_HOME[user.role] || '/mar'} replace />
   }
 
   return (

@@ -83,10 +83,10 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
   // ── Create form ──────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md">
+      <div role="dialog" aria-modal="true" aria-labelledby="add-staff-title" className="bg-white rounded-3xl shadow-2xl w-full max-w-md">
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-xl font-black text-gray-900">Add Staff Member</h2>
+          <h2 id="add-staff-title" className="text-xl font-black text-gray-900">Add Staff Member</h2>
           <button
             onClick={onClose}
             className="min-h-[40px] min-w-[40px] flex items-center justify-center text-gray-400 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-colors"
@@ -105,10 +105,11 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
 
           {/* Full name */}
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+            <label htmlFor="staff-full-name" className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
               Full Name
             </label>
             <input
+              id="staff-full-name"
               type="text"
               value={form.full_name}
               onChange={e => set('full_name', e.target.value)}
@@ -135,34 +136,19 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
 
           {/* Role */}
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
+            <label htmlFor="staff-role" className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">
               Role
             </label>
-            <div className="space-y-2">
+            <select
+              id="staff-role"
+              value={form.role}
+              onChange={e => set('role', e.target.value)}
+              className="w-full min-h-[48px] rounded-xl border-2 border-gray-200 px-4 text-sm text-gray-900 focus:border-teal focus:outline-none"
+            >
               {ROLES.map(r => (
-                <label
-                  key={r.value}
-                  className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-colors ${
-                    form.role === r.value
-                      ? 'border-teal bg-teal/5'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="role"
-                    value={r.value}
-                    checked={form.role === r.value}
-                    onChange={() => set('role', r.value)}
-                    className="mt-0.5 accent-teal"
-                  />
-                  <div>
-                    <div className="text-sm font-bold text-gray-800">{r.label}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{r.desc}</div>
-                  </div>
-                </label>
+                <option key={r.value} value={r.value}>{r.label} — {r.desc}</option>
               ))}
-            </div>
+            </select>
           </div>
 
           {/* Optional PIN */}

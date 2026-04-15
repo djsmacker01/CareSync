@@ -73,7 +73,7 @@ export default function ClientsPage() {
             onClick={() => setShowAdd(true)}
             className="min-h-[44px] px-4 rounded-xl bg-teal text-white text-sm font-bold hover:bg-teal/90 transition-colors flex-shrink-0"
           >
-            + Add Resident
+            + Add Client
           </button>
         )}
       </div>
