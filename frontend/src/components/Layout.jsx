@@ -1,9 +1,84 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useOfflineSync } from '../hooks/useOfflineSync'
 import TimeoutWarning from './TimeoutWarning'
 import SyncBanner from './SyncBanner'
+
+// ── Live clock ──────────────────────────────────────────────────────────────
+function getShift(h) {
+  if (h >= 8  && h < 14) return { label: 'AM Shift',  color: 'text-teal2'        }
+  if (h >= 14 && h < 22) return { label: 'PM Shift',  color: 'text-amber-300'    }
+  return                         { label: 'Night',     color: 'text-indigo-300'   }
+}
+
+function isHandover(h, m) {
+  return (h === 13 && m >= 45) || (h === 14) || (h === 15) || (h === 16 && m === 0)
+}
+
+function useClock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return now
+}
+
+function LiveClock() {
+  const now      = useClock()
+  const h        = now.getHours()
+  const m        = now.getMinutes()
+  const shift    = getShift(h)
+  const handover = isHandover(h, m)
+
+  const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const date = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+
+  return (
+    <div className="hidden sm:flex flex-col items-end leading-tight select-none">
+      <div className="flex items-center gap-2">
+        <span className="text-white font-mono font-bold text-sm tracking-wide tabular-nums">
+          {time}
+        </span>
+        <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+          handover
+            ? 'bg-amber-400 text-navy animate-pulse'
+            : 'bg-white/10 ' + shift.color
+        }`}>
+          {handover ? 'Handover' : shift.label}
+        </span>
+      </div>
+      <span className="text-[10px] text-gray-400 mt-0.5">{date}</span>
+    </div>
+  )
+}
+
+// Compact version for the mobile drawer
+function MobileDrawerClock() {
+  const now      = useClock()
+  const h        = now.getHours()
+  const m        = now.getMinutes()
+  const shift    = getShift(h)
+  const handover = isHandover(h, m)
+
+  const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const date = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+
+  return (
+    <div className="flex items-center gap-2 mt-1.5 select-none">
+      <span className="font-mono text-xs font-bold text-white/80 tabular-nums">{time}</span>
+      <span className="text-[10px] text-gray-400">{date}</span>
+      <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+        handover
+          ? 'bg-amber-400 text-navy animate-pulse'
+          : 'bg-white/10 ' + shift.color
+      }`}>
+        {handover ? 'Handover' : shift.label}
+      </span>
+    </div>
+  )
+}
 
 const NAV_ITEMS = [
   { to: '/mar',       label: 'MAR',           roles: ['staff', 'supervisor', 'manager', 'readonly'] },
@@ -81,7 +156,8 @@ export default function Layout({ children }) {
             {badge.label}
           </span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <LiveClock />
           <span className="text-sm text-gray-300 hidden sm:block truncate max-w-[160px]">{user?.full_name}</span>
           <button
             onClick={handleLogout}
@@ -126,6 +202,7 @@ export default function Layout({ children }) {
               <div className="min-w-0">
                 <div className="font-bold text-lg text-teal2 tracking-tight">CareSync</div>
                 <div className="text-sm text-gray-300 mt-0.5 truncate">{user?.full_name}</div>
+                <MobileDrawerClock />
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
