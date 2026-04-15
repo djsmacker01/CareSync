@@ -35,10 +35,10 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-5">
+      <div role="dialog" aria-modal="true" aria-labelledby="log-check-title" className="bg-white rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-gray-900">Log Fire Safety Check</h2>
+          <h2 id="log-check-title" className="text-xl font-black text-gray-900">Log Fire Safety Check</h2>
           <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center text-xl font-bold">
             ✕
           </button>
