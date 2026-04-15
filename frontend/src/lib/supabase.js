@@ -12,5 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
+    // Explicit storage key avoids lock-name collisions during HMR / Strict Mode
+    storageKey: 'caresync-auth-token',
   },
 })
