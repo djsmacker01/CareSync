@@ -23,6 +23,7 @@ import fireRoutes from './routes/fire.js'
 import visitorsRoutes from './routes/visitors.js'
 import dashboardRoutes from './routes/dashboard.js'
 import staffRoutes from './routes/staff.js'
+import cdRoutes from './routes/cd.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -61,6 +62,7 @@ app.use('/api/fire',      fireRoutes)
 app.use('/api/visitors',  visitorsRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/staff',     staffRoutes)
+app.use('/api/cd',        cdRoutes)
 
 // ── Health check ─────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
@@ -12,7 +13,25 @@ import DashboardPage from './pages/dashboard/DashboardPage'
 import ClientsPage from './pages/clients/ClientsPage'
 import ClientProfilePage from './pages/clients/ClientProfilePage'
 import StaffPage from './pages/staff/StaffPage'
+import CDPage from './pages/cd/CDPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+
+// ── PWA update banner ───────────────────────────────────────────────────────
+function UpdatePrompt() {
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW()
+  if (!needRefresh) return null
+  return (
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-navy text-white text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl">
+      <span>New version available</span>
+      <button
+        onClick={() => updateServiceWorker(true)}
+        className="min-h-[36px] px-4 rounded-xl bg-teal text-white text-xs font-bold hover:bg-teal/90 transition-colors"
+      >
+        Update now
+      </button>
+    </div>
+  )
+}
 
 
 function ProtectedLayout({ children, roles }) {
@@ -26,6 +45,7 @@ function ProtectedLayout({ children, roles }) {
 export default function App() {
   return (
     <AuthProvider>
+      <UpdatePrompt />
       <BrowserRouter>
         <Routes>
           {/* Public */}
@@ -83,6 +103,13 @@ export default function App() {
           <Route path="/clients/:id" element={
             <ProtectedLayout roles={['staff', 'supervisor', 'manager']}>
               <ClientProfilePage />
+            </ProtectedLayout>
+          } />
+
+          {/* CD Register */}
+          <Route path="/cd" element={
+            <ProtectedLayout roles={['staff', 'supervisor', 'manager']}>
+              <CDPage />
             </ProtectedLayout>
           } />
 

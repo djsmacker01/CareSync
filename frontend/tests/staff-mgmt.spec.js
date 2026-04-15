@@ -8,7 +8,8 @@ import { test, expect } from '@playwright/test'
 test.describe('Staff page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/staff')
-    await page.waitForLoadState('networkidle')
+    // Wait for the page header — confirms auth resolved and StaffPage rendered
+    await page.getByRole('heading', { name: /staff/i }).waitFor({ state: 'visible', timeout: 15_000 })
   })
 
   test('renders the staff page heading', async ({ page }) => {

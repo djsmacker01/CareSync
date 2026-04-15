@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useOfflineSync } from '../hooks/useOfflineSync'
 import TimeoutWarning from './TimeoutWarning'
+import SyncBanner from './SyncBanner'
 
 const NAV_ITEMS = [
   { to: '/mar',       label: 'MAR',           roles: ['staff', 'supervisor', 'manager', 'readonly'] },
@@ -9,6 +11,7 @@ const NAV_ITEMS = [
   { to: '/tasks',     label: 'Tasks',          roles: ['staff', 'supervisor', 'manager'] },
   { to: '/fire',      label: 'Fire Safety',    roles: ['staff', 'supervisor', 'manager', 'readonly'] },
   { to: '/visitors',  label: 'Visitors',       roles: ['staff', 'supervisor', 'manager', 'readonly'] },
+  { to: '/cd',        label: 'CD Register',    roles: ['staff', 'supervisor', 'manager'] },
   { to: '/clients',   label: 'Service Users',  roles: ['staff', 'supervisor', 'manager'] },
   { to: '/dashboard', label: 'Dashboard',      roles: ['manager'] },
   { to: '/staff',     label: 'Staff',          roles: ['manager'] },
@@ -20,6 +23,7 @@ const NAV_ICONS = {
   '/tasks':     '✅',
   '/fire':      '🔥',
   '/visitors':  '👤',
+  '/cd':        '🔐',
   '/clients':   '🏠',
   '/dashboard': '📊',
   '/staff':     '👥',
@@ -36,6 +40,7 @@ export default function Layout({ children }) {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const { isOnline, pendingCount, syncStatus, syncErrors } = useOfflineSync()
 
   const visibleNav = NAV_ITEMS.filter(item => item.roles.includes(user?.role))
 
@@ -49,6 +54,12 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TimeoutWarning />
+      <SyncBanner
+        isOnline={isOnline}
+        pendingCount={pendingCount}
+        syncStatus={syncStatus}
+        syncErrors={syncErrors}
+      />
 
       {/* ── Top bar ── */}
       <header className="bg-navy text-white px-3 sm:px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-30">

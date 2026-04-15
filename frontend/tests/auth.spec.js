@@ -72,6 +72,7 @@ test.describe('Login page', () => {
 test.describe('Successful login', () => {
   test('staff logs in and reaches /mar', async ({ page }) => {
     await page.goto('/login')
+    await page.getByRole('button', { name: 'Email login' }).waitFor({ state: 'visible', timeout: 10_000 })
     await page.getByRole('button', { name: 'Email login' }).click()
     await page.getByPlaceholder('you@caresync.com').fill(STAFF_EMAIL)
     await page.getByPlaceholder('••••••••').fill(STAFF_PASS)
@@ -82,6 +83,7 @@ test.describe('Successful login', () => {
 
   test('manager logs in and reaches /dashboard', async ({ page }) => {
     await page.goto('/login')
+    await page.getByRole('button', { name: 'Email login' }).waitFor({ state: 'visible', timeout: 10_000 })
     await page.getByRole('button', { name: 'Email login' }).click()
     await page.getByPlaceholder('you@caresync.com').fill(MANAGER_EMAIL)
     await page.getByPlaceholder('••••••••').fill(MANAGER_PASS)
@@ -91,8 +93,9 @@ test.describe('Successful login', () => {
   })
 
   test('already-logged-in user visiting /login is redirected', async ({ page }) => {
-    // Log in first
+    // Log in first — wait for the form to appear (authLoading clears first)
     await page.goto('/login')
+    await page.getByPlaceholder('you@caresync.com').waitFor({ state: 'visible', timeout: 10_000 })
     await page.getByPlaceholder('you@caresync.com').fill(STAFF_EMAIL)
     await page.getByPlaceholder('••••••••').fill(STAFF_PASS)
     await page.getByRole('button', { name: 'Sign in' }).click()

@@ -49,6 +49,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let mounted = true
 
+    // Safety valve: if Supabase doesn't fire onAuthStateChange within 8 s
+    // (e.g. stale refresh token, no network), clear the loading gate so the
+    // app never hangs on the "Loading…" screen.
+    const safetyTimer = setTimeout(() => {
+      if (mounted) setLoading(false)
+    }, 8_000)
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       if (!mounted) return
 
@@ -63,11 +70,13 @@ export function AuthProvider({ children }) {
         if (mounted) { setUser(null); setSession(null) }
       }
 
+      clearTimeout(safetyTimer)
       if (mounted) setLoading(false)
     })
 
     return () => {
       mounted = false
+      clearTimeout(safetyTimer)
       subscription.unsubscribe()
     }
   }, [])

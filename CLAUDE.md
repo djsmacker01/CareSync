@@ -73,9 +73,13 @@ CareSync is a UK-based residential care home management platform replacing all p
 - [x] Module 1 — Digital MAR
 - [x] Module 2 — Stock Manager
 - [x] Module 3 — Task Board
-- [ ] Module 4 — Fire Safety Log
-- [ ] Module 5 — Visitor Log
-- [ ] Module 6 — Manager Dashboard
+- [x] Module 4 — Fire Safety Log
+- [x] Module 5 — Visitor Log
+- [x] Module 6 — Manager Dashboard
+- [x] Service Users (Clients) management
+- [x] Staff management
+- [x] PWA — vite-plugin-pwa, manifest, Workbox service worker, offline MAR cache
+- [x] Playwright E2E test suite (11 spec files, all modules covered)
 
 ---
 

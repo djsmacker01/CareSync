@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
+import { enqueue } from '../lib/offlineQueue'
 
 export function useMAR() {
   const [data, setData]       = useState(null)
@@ -90,8 +91,45 @@ export function useMAR() {
     }
   }, [])
 
-  // Record a MAR entry directly via Supabase (insert)
-  const recordEntry = useCallback(async ({ client_id, medication_id, shift, status, refusal_reason, notes, administered_by }) => {
+  // ── Optimistic local state update (shared by online + offline paths) ──
+  function applyOptimisticEntry({ client_id, medication_id, status, refusal_reason, entry }) {
+    setData(prev => {
+      if (!prev) return prev
+      const clients = prev.clients.map(c => {
+        if (c.id !== client_id) return c
+        const meds = c.medications.map(m => {
+          if (m.id !== medication_id) return m
+          return { ...m, status, entry: entry || null, refusal_reason }
+        })
+        return {
+          ...c,
+          medications: meds,
+          given:   meds.filter(m => m.status === 'given').length,
+          refused: meds.filter(m => m.status === 'refused').length,
+          pending: meds.filter(m => m.status === 'pending').length,
+        }
+      })
+      const overallGiven = clients.reduce((s, c) => s + c.given, 0)
+      return { ...prev, clients, overallGiven }
+    })
+  }
+
+  // Record a MAR entry — writes directly when online, queues when offline.
+  const recordEntry = useCallback(async ({ client_id, medication_id, shift, status, refusal_reason, notes, administered_by, clientName, medicationName }) => {
+    // ── Offline path ─────────────────────────────────────────────
+    if (!navigator.onLine) {
+      await enqueue({
+        label:    `MAR · ${clientName || 'Resident'} · ${medicationName || 'Medication'} · ${status}`,
+        endpoint: '/api/mar/entry',
+        method:   'POST',
+        body:     { client_id, medication_id, shift, status, refusal_reason: refusal_reason || null, notes: notes || null },
+      })
+      // Apply optimistic update with a synthetic 'pending_sync' marker
+      applyOptimisticEntry({ client_id, medication_id, status, refusal_reason, entry: { _pending: true } })
+      return { _pending: true }
+    }
+
+    // ── Online path ───────────────────────────────────────────────
     const today = new Date().toISOString().slice(0, 10)
 
     // Prevent duplicate
@@ -115,27 +153,7 @@ export function useMAR() {
 
     if (error) throw error
 
-    // Update local state optimistically
-    setData(prev => {
-      if (!prev) return prev
-      const clients = prev.clients.map(c => {
-        if (c.id !== client_id) return c
-        const meds = c.medications.map(m => {
-          if (m.id !== medication_id) return m
-          return { ...m, status, entry, refusal_reason }
-        })
-        return {
-          ...c,
-          medications: meds,
-          given:   meds.filter(m => m.status === 'given').length,
-          refused: meds.filter(m => m.status === 'refused').length,
-          pending: meds.filter(m => m.status === 'pending').length,
-        }
-      })
-      const overallGiven = clients.reduce((s, c) => s + c.given, 0)
-      return { ...prev, clients, overallGiven }
-    })
-
+    applyOptimisticEntry({ client_id, medication_id, status, refusal_reason, entry })
     return entry
   }, [])
 
