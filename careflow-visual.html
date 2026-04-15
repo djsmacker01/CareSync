@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareFlow — Visual Workflow & Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f8fc;
+  --white: #ffffff;
+  --navy: #0d1b2a;
+  --navy2: #1a2e45;
+  --teal: #00a896;
+  --teal2: #00c9b1;
+  --amber: #f4a435;
+  --coral: #e8534a;
+  --sky: #3a86ff;
+  --green: #2ec97a;
+  --muted: #8a9ab5;
+  --border: #e2e8f0;
+  --text: #1e2d3d;
+  --text2: #4a5568;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; }
+.page { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+
+.page-title { text-align:center; margin-bottom:60px; }
+.page-title .chip {
+  display:inline-block; background:#e8f8f5; color:var(--teal);
+  font-size:11px; font-family:'Syne',sans-serif; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; padding:5px 14px;
+  border-radius:100px; margin-bottom:14px;
+}
+.page-title h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,52px); font-weight:800; letter-spacing:-1.5px; color:var(--navy); }
+.page-title h1 span { color:var(--teal); }
+.page-title p { color:var(--muted); font-size:15px; margin-top:8px; }
+
+.sec-head { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+.sec-num { width:32px; height:32px; border-radius:50%; background:var(--navy); color:#fff; font-family:'Syne',sans-serif; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sec-head h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--navy); }
+.sec-head p { font-size:13px; color:var(--muted); margin-top:2px; }
+
+/* ── FLOWCHART ── */
+.flow-container { background:var(--white); border-radius:20px; border:1px solid var(--border); padding:40px 30px; box-shadow:0 4px 24px rgba(0,0,0,0.06); margin-bottom:80px; }
+.flow-top { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+.flow-node { border-radius:12px; padding:14px 16px; text-align:center; min-width:110px; flex:1; max-width:160px; border:2px solid transparent; }
+.flow-node .fn-icon { font-size:22px; margin-bottom:6px; }
+.flow-node .fn-label { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; }
+.flow-node .fn-sub { font-size:10px; color:var(--muted); margin-top:3px; line-height:1.4; }
+.fn-paper { background:#fff5f5; border-color:#fecaca; }
+.fn-paper .fn-label { color:#c53030; }
+
+.flow-down-arrow { text-align:center; padding:16px 0 8px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+.flow-down-arrow .arrow-line { width:2px; height:28px; background:linear-gradient(to bottom, var(--border), var(--teal)); }
+.flow-down-arrow .arrow-head { color:var(--teal); font-size:16px; line-height:1; font-family:'Syne',sans-serif; font-size:11px; font-weight:700; }
+
+.flow-login { background:var(--navy); color:#fff; border-radius:14px; padding:16px 24px; text-align:center; max-width:320px; margin:0 auto; }
+.flow-login .fl-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.flow-login .fl-sub { font-size:11px; color:#94a3b8; margin-top:4px; }
+
+.flow-branches { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px; }
+@media(max-width:640px){ .flow-branches { grid-template-columns:1fr; } }
+
+.flow-branch { border-radius:14px; border:1.5px solid var(--border); overflow:hidden; }
+.fb-header { padding:12px 14px; font-family:'Syne',sans-serif; font-size:12px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.fb-am .fb-header { background:#fffbeb; color:#92400e; }
+.fb-pm .fb-header { background:#eff6ff; color:#1e40af; }
+.fb-mgr .fb-header { background:#f0fdf4; color:#166534; }
+.fb-steps { padding:10px 14px; }
+.fb-step { display:flex; align-items:flex-start; gap:8px; padding:5px 0; border-bottom:1px solid #f1f5f9; font-size:11.5px; color:var(--text2); }
+.fb-step:last-child { border-bottom:none; }
+.fb-dot { width:18px; height:18px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; flex-shrink:0; margin-top:1px; font-family:'Syne',sans-serif; }
+.fb-am .fb-dot { background:#fef3c7; color:#92400e; }
+.fb-pm .fb-dot { background:#dbeafe; color:#1e40af; }
+.fb-mgr .fb-dot { background:#dcfce7; color:#166534; }
+
+.flow-converge { display:flex; align-items:center; justify-content:center; margin-top:20px; }
+.conv-line { flex:1; height:2px; background:var(--border); max-width:160px; }
+.conv-dot { width:12px; height:12px; border-radius:50%; background:var(--teal); border:2px solid var(--white); box-shadow:0 0 0 3px rgba(0,168,150,0.2); }
+
+.flow-cloud { background:linear-gradient(135deg,#e8f8f5,#e0f2fe); border:1.5px solid #a7f3d0; border-radius:14px; padding:16px 24px; text-align:center; max-width:360px; margin:16px auto 0; }
+.flow-cloud .fc-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--navy); }
+.flow-cloud .fc-sub { font-size:11.5px; color:var(--muted); margin-top:4px; }
+
+.flow-outputs { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:20px; }
+@media(max-width:640px){ .flow-outputs { grid-template-columns:repeat(2,1fr); } }
+.fo-card { background:var(--white); border:1.5px solid var(--border); border-radius:10px; padding:12px 10px; text-align:center; }
+.fo-card .fo-icon { font-size:20px; margin-bottom:6px; }
+.fo-card .fo-label { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:var(--navy); }
+.fo-card .fo-desc { font-size:10px; color:var(--muted); margin-top:3px; line-height:1.4; }
+.fo-teal { border-color:#a7f3d0; background:#f0fdf9; }
+.fo-amber { border-color:#fcd34d; background:#fffbeb; }
+.fo-coral { border-color:#fca5a5; background:#fff5f5; }
+.fo-sky { border-color:#93c5fd; background:#eff6ff; }
+
+/* ── WIREFRAMES ── */
+.wf-grid { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:80px; }
+@media(max-width:700px){ .wf-grid { grid-template-columns:1fr; } }
+.device-wrap { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.device-label { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.device-label .dl-dot { width:8px; height:8px; border-radius:50%; }
+
+.tablet-frame { width:100%; max-width:420px; background:#1e2d3d; border-radius:24px; padding:16px; box-shadow:0 0 0 2px #0d1b2a, 0 20px 60px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); position:relative; }
+.tablet-frame::before { content:''; position:absolute; top:8px; left:50%; transform:translateX(-50%); width:40px; height:4px; background:#0d1b2a; border-radius:2px; }
+.tablet-screen { background:#f7f8fc; border-radius:14px; overflow:hidden; min-height:520px; }
+
+/* Staff screen */
+.ss-topbar { background:var(--navy); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
+.ss-topbar .app-name { font-family:'Syne',sans-serif; font-size:13px; font-weight:800; color:var(--teal2); }
+.ss-topbar .shift-tag { background:rgba(244,164,53,0.2); color:var(--amber); font-size:10px; font-family:'Syne',sans-serif; font-weight:700; padding:3px 8px; border-radius:100px; }
+.ss-topbar .staff-id { font-size:10px; color:#94a3b8; }
+.ss-greeting { padding:14px 16px 10px; background:var(--white); border-bottom:1px solid var(--border); }
+.ss-greeting .sg-name { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--navy); }
+.ss-greeting .sg-sub { font-size:11px; color:var(--muted); }
+.ss-tabs { display:flex; background:var(--white); border-bottom:2px solid var(--border); }
+.ss-tab { flex:1; padding:9px 4px; text-align:center; font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; }
+.ss-tab.active { color:var(--teal); border-bottom-color:var(--teal); }
+.ss-body { padding:12px; }
+.ss-client-list { display:flex; flex-direction:column; gap:8px; }
+.ss-client { background:var(--white); border-radius:10px; border:1.5px solid var(--border); padding:10px 12px; display:flex; align-items:center; gap:10px; }
+.ss-client.done { border-color:#a7f3d0; background:#f0fdf9; }
+.ss-client.refused { border-color:#fca5a5; background:#fff5f5; }
+.ss-client.pending { border-color:#fcd34d; background:#fffdf0; }
+.sc-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.done .sc-avatar { background:#dcfce7; }
+.refused .sc-avatar { background:#fee2e2; }
+.pending .sc-avatar { background:#fef9c3; }
+.sc-info { flex:1; }
+.sc-name { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--navy); }
+.sc-meds { font-size:10px; color:var(--muted); margin-top:1px; }
+.sc-badge { font-size:9px; font-family:'Syne',sans-serif; font-weight:700; padding:3px 8px; border-radius:100px; }
+.done .sc-badge { background:#dcfce7; color:#166534; }
+.refused .sc-badge { background:#fee2e2; color:#991b1b; }
+.pending .sc-badge { background:#fef9c3; color:#854d0e; }
+.ss-alert { background:#fffbeb; border:1.5px solid #fcd34d; border-radius:10px; padding:10px 12px; margin-top:8px; display:flex; align-items:center; gap:8px; }
+.ss-alert .sa-icon { font-size:16px; flex-shrink:0; }
+.ss-alert .sa-text { font-size:11px; color:#92400e; }
+.ss-alert .sa-text strong { font-family:'Syne',sans-serif; }
+.task-header { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:var(--muted); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; margin-top:10px; }
+.task-item { background:var(--white); border:1.5px solid var(--border); border-radius:8px; padding:8px 10px; margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:11px; }
+.task-check { width:16px; height:16px; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:10px; }
+.task-done .task-check { background:#dcfce7; color:#166534; border:1.5px solid #a7f3d0; }
+.task-todo .task-check { background:var(--white); border:1.5px solid var(--border); }
+.task-done span { color:var(--muted); text-decoration:line-through; }
+
+/* Manager screen */
+.mgr-screen { background:#0d1b2a; }
+.ms-topbar { background:#0a1628; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); }
+.ms-topbar .app-name { font-family:'Syne',sans-serif; font-size:13px; font-weight:800; color:var(--teal2); }
+.ms-topbar .mgr-tag { background:rgba(58,134,255,0.2); color:#93c5fd; font-size:10px; font-family:'Syne',sans-serif; font-weight:700; padding:3px 8px; border-radius:100px; }
+.ms-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:12px; }
+.ms-stat { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 8px; text-align:center; }
+.ms-stat .mss-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+.ms-stat .mss-label { font-size:9px; color:#64748b; margin-top:2px; text-transform:uppercase; letter-spacing:.5px; }
+.ms-stat.alert-stat { border-color:rgba(244,164,53,0.4); }
+.ms-stat.alert-stat .mss-val { color:var(--amber); }
+.ms-stat.ok-stat .mss-val { color:var(--teal2); }
+.ms-stat.warn-stat .mss-val { color:var(--coral); }
+.ms-section { padding:0 12px 10px; }
+.ms-sec-title { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.ms-client-row { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.04); border-radius:8px; padding:8px 10px; margin-bottom:6px; border:1px solid rgba(255,255,255,0.06); }
+.mc-name { font-size:11px; color:#e2e8f0; flex:1; font-family:'Syne',sans-serif; font-weight:600; }
+.mc-bar-wrap { flex:1.5; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
+.mc-bar { height:100%; border-radius:3px; }
+.mc-pct { font-size:10px; color:#94a3b8; width:28px; text-align:right; font-family:'Syne',sans-serif; }
+.ms-alerts { padding:0 12px 12px; }
+.ms-alert-item { display:flex; align-items:center; gap:8px; background:rgba(244,164,53,0.08); border:1px solid rgba(244,164,53,0.25); border-radius:8px; padding:8px 10px; margin-bottom:6px; }
+.ms-alert-item .mai-icon { font-size:14px; flex-shrink:0; }
+.ms-alert-item .mai-text { font-size:10.5px; color:#fcd34d; flex:1; }
+.ms-alert-item .mai-time { font-size:9px; color:#64748b; }
+.ms-shift-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin:0 12px 12px; }
+.msc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.msc-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:#e2e8f0; }
+.msc-tag { font-size:9px; padding:2px 7px; border-radius:100px; font-family:'Syne',sans-serif; font-weight:700; }
+.msc-am .msc-tag { background:rgba(244,164,53,0.2); color:var(--amber); }
+.msc-progress { display:flex; flex-direction:column; gap:5px; }
+.msc-prog-row { display:flex; align-items:center; gap:8px; font-size:10px; color:#94a3b8; }
+.msc-prog-bar { flex:1; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
+.msc-prog-fill { height:100%; border-radius:3px; }
+
+/* Module map */
+.mm-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:40px; }
+@media(max-width:640px){ .mm-grid { grid-template-columns:1fr 1fr; } }
+.mm-card { background:var(--white); border:1.5px solid var(--border); border-radius:14px; padding:18px 14px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+.mm-card .mc-icon { font-size:28px; margin-bottom:10px; }
+.mm-card .mc-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:800; color:var(--navy); }
+.mm-card .mc-replaces { font-size:10.5px; color:var(--muted); margin-top:4px; }
+.mm-card .mc-arrow { color:var(--teal); font-size:13px; margin:6px 0; }
+.mm-card .mc-digital { font-size:10.5px; color:var(--teal); font-weight:600; }
+
+.divider { border:none; border-top:1.5px solid var(--border); margin:60px 0; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.animate { animation:fadeUp .6s both; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-title">
+    <div class="chip">CareFlow · Visual Blueprint</div>
+    <h1>Workflow <span>&</span> Wireframes</h1>
+    <p>System flowchart · Staff screen · Manager screen — all in one place</p>
+  </div>
+
+  <!-- SECTION 1: FLOWCHART -->
+  <div class="animate">
+    <div class="sec-head">
+      <div class="sec-num">1</div>
+      <div>
+        <h2>System Flowchart</h2>
+        <p>How information moves from staff action → cloud → manager oversight</p>
+      </div>
+    </div>
+
+    <div class="flow-container">
+      <div class="flow-top">
+        <div class="flow-node fn-paper"><div class="fn-icon">📋</div><div class="fn-label">Paper MAR</div><div class="fn-sub">Handwritten chart</div></div>
+        <div class="flow-node fn-paper"><div class="fn-icon">💊</div><div class="fn-label">Stock Book</div><div class="fn-sub">Manual count</div></div>
+        <div class="flow-node fn-paper"><div class="fn-icon">📁</div><div class="fn-label">Paper Files</div><div class="fn-sub">Scanned monthly</div></div>
+        <div class="flow-node fn-paper"><div class="fn-icon">📝</div><div class="fn-label">Task Lists</div><div class="fn-sub">No accountability</div></div>
+        <div class="flow-node fn-paper"><div class="fn-icon">🔥</div><div class="fn-label">Fire File</div><div class="fn-sub">Paper checklist</div></div>
+      </div>
+
+      <div class="flow-down-arrow">
+        <div class="arrow-line"></div>
+        <div class="arrow-head">▼ All replaced by</div>
+        <div class="arrow-line" style="background:linear-gradient(to bottom,var(--teal),var(--border))"></div>
+      </div>
+
+      <div class="flow-login">
+        <div class="fl-title">🔐 Staff Login — CareFlow App</div>
+        <div class="fl-sub">PIN or email · Role assigned automatically · Works on tablet, phone & desktop</div>
+      </div>
+
+      <div class="flow-down-arrow">
+        <div class="arrow-line"></div>
+        <div class="arrow-head" style="color:var(--muted)">▼ Routes to correct view</div>
+      </div>
+
+      <div class="flow-branches">
+        <div class="flow-branch fb-am">
+          <div class="fb-header">☀️ AM Staff · 08:00–16:00</div>
+          <div class="fb-steps">
+            <div class="fb-step"><div class="fb-dot">1</div>See AM task checklist</div>
+            <div class="fb-step"><div class="fb-dot">2</div>Open MAR · go client by client</div>
+            <div class="fb-step"><div class="fb-dot">3</div>Tap ✓ Given or ✗ Refused</div>
+            <div class="fb-step"><div class="fb-dot">4</div>Stock auto-deducted in background</div>
+            <div class="fb-step"><div class="fb-dot">5</div>Log visitors · complete fire check</div>
+            <div class="fb-step"><div class="fb-dot">6</div>Tick tasks · handover note created</div>
+          </div>
+        </div>
+        <div class="flow-branch fb-pm">
+          <div class="fb-header">🌙 PM Staff · 14:00–22:00</div>
+          <div class="fb-steps">
+            <div class="fb-step"><div class="fb-dot">1</div>See handover from AM shift</div>
+            <div class="fb-step"><div class="fb-dot">2</div>Check flagged tasks or refusals</div>
+            <div class="fb-step"><div class="fb-dot">3</div>Do PM medication round</div>
+            <div class="fb-step"><div class="fb-dot">4</div>Low-stock alerts shown if triggered</div>
+            <div class="fb-step"><div class="fb-dot">5</div>Complete PM task checklist</div>
+            <div class="fb-step"><div class="fb-dot">6</div>End-of-shift summary auto-saved</div>
+          </div>
+        </div>
+        <div class="flow-branch fb-mgr">
+          <div class="fb-header">📊 Manager · Any Time</div>
+          <div class="fb-steps">
+            <div class="fb-step"><div class="fb-dot">1</div>Live dashboard — all 20 clients</div>
+            <div class="fb-step"><div class="fb-dot">2</div>See medication compliance %</div>
+            <div class="fb-step"><div class="fb-dot">3</div>Receive stock & missed-med alerts</div>
+            <div class="fb-step"><div class="fb-dot">4</div>View shift completion status</div>
+            <div class="fb-step"><div class="fb-dot">5</div>Review visitor & fire logs</div>
+            <div class="fb-step"><div class="fb-dot">6</div>Export monthly PDF — no scanning</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-converge">
+        <div class="conv-line"></div>
+        <div class="conv-dot"></div>
+        <div class="conv-line"></div>
+      </div>
+
+      <div class="flow-cloud">
+        <div class="fc-title">☁️ Secure Cloud Database</div>
+        <div class="fc-sub">All data stored, timestamped & encrypted · No scanning · Accessible 24/7</div>
+      </div>
+
+      <div class="flow-down-arrow">
+        <div class="arrow-line"></div>
+        <div class="arrow-head" style="color:var(--muted)">▼ Automatically produces</div>
+      </div>
+
+      <div class="flow-outputs">
+        <div class="fo-card fo-teal"><div class="fo-icon">📄</div><div class="fo-label">Monthly Report</div><div class="fo-desc">Auto PDF — no scanning</div></div>
+        <div class="fo-card fo-amber"><div class="fo-icon">🔔</div><div class="fo-label">Stock Alerts</div><div class="fo-desc">Instant to manager</div></div>
+        <div class="fo-card fo-coral"><div class="fo-icon">🔍</div><div class="fo-label">Audit Trail</div><div class="fo-desc">CQC-ready records</div></div>
+        <div class="fo-card fo-sky"><div class="fo-icon">🔄</div><div class="fo-label">Handover Note</div><div class="fo-desc">Auto shift summary</div></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: WIREFRAMES -->
+  <div class="animate" style="animation-delay:.2s">
+    <div class="sec-head">
+      <div class="sec-num" style="background:var(--teal)">2</div>
+      <div>
+        <h2>Screen Wireframes</h2>
+        <p>What staff and managers actually see on their device</p>
+      </div>
+    </div>
+
+    <div class="wf-grid">
+
+      <!-- STAFF VIEW -->
+      <div class="device-wrap">
+        <div class="device-label"><div class="dl-dot" style="background:var(--amber)"></div>Staff View · Tablet / Phone</div>
+        <div class="tablet-frame">
+          <div class="tablet-screen">
+            <div class="ss-topbar">
+              <div class="app-name">CareFlow</div>
+              <div class="shift-tag">☀ AM Shift</div>
+              <div class="staff-id">Sarah M.</div>
+            </div>
+            <div class="ss-greeting">
+              <div class="sg-name">Good morning, Sarah 👋</div>
+              <div class="sg-sub">14 of 20 clients medicated · 3 pending · 1 refused</div>
+            </div>
+            <div class="ss-tabs">
+              <div class="ss-tab active">💊 MAR</div>
+              <div class="ss-tab">✅ Tasks</div>
+              <div class="ss-tab">📦 Stock</div>
+              <div class="ss-tab">🪪 Visitors</div>
+            </div>
+            <div class="ss-body">
+              <div class="ss-client-list">
+                <div class="ss-client done">
+                  <div class="sc-avatar">👩</div>
+                  <div class="sc-info"><div class="sc-name">Margaret T.</div><div class="sc-meds">Olanzapine 10mg · Amlodipine 5mg</div></div>
+                  <div class="sc-badge">✓ Given</div>
+                </div>
+                <div class="ss-client refused">
+                  <div class="sc-avatar">👨</div>
+                  <div class="sc-info"><div class="sc-name">James O.</div><div class="sc-meds">Sertraline 50mg</div></div>
+                  <div class="sc-badge">✗ Refused</div>
+                </div>
+                <div class="ss-client pending">
+                  <div class="sc-avatar">👩</div>
+                  <div class="sc-info"><div class="sc-name">Linda K.</div><div class="sc-meds">Metformin 500mg · Lisinopril</div></div>
+                  <div class="sc-badge">⏳ Pending</div>
+                </div>
+                <div class="ss-client done">
+                  <div class="sc-avatar">👨</div>
+                  <div class="sc-info"><div class="sc-name">Robert A.</div><div class="sc-meds">Risperidone 2mg</div></div>
+                  <div class="sc-badge">✓ Given</div>
+                </div>
+              </div>
+              <div class="ss-alert">
+                <div class="sa-icon">⚠️</div>
+                <div class="sa-text"><strong>Stock Alert:</strong> James O. — Sertraline · 4 days supply left</div>
+              </div>
+              <div class="task-header">AM Tasks</div>
+              <div class="task-item task-done"><div class="task-check">✓</div><span>Morning handwashing check</span></div>
+              <div class="task-item task-done"><div class="task-check">✓</div><span>Breakfast support logged</span></div>
+              <div class="task-item task-todo"><div class="task-check"></div><span style="color:var(--text2)">Fire door check</span></div>
+              <div class="task-item task-todo"><div class="task-check"></div><span style="color:var(--text2)">Visitor log reviewed</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANAGER VIEW -->
+      <div class="device-wrap">
+        <div class="device-label"><div class="dl-dot" style="background:var(--teal)"></div>Manager View · Dashboard</div>
+        <div class="tablet-frame">
+          <div class="tablet-screen mgr-screen">
+            <div class="ms-topbar">
+              <div class="app-name">CareFlow</div>
+              <div class="mgr-tag">Manager</div>
+            </div>
+            <div class="ms-stats">
+              <div class="ms-stat ok-stat"><div class="mss-val">17</div><div class="mss-label">Medicated</div></div>
+              <div class="ms-stat warn-stat"><div class="mss-val">2</div><div class="mss-label">Refused</div></div>
+              <div class="ms-stat alert-stat"><div class="mss-val">3</div><div class="mss-label">Stock Alerts</div></div>
+            </div>
+            <div class="ms-section">
+              <div class="ms-sec-title">Medication Compliance Today</div>
+              <div class="ms-client-row"><div class="mc-name">Margaret T.</div><div class="mc-bar-wrap"><div class="mc-bar" style="width:100%;background:var(--teal2)"></div></div><div class="mc-pct">100%</div></div>
+              <div class="ms-client-row"><div class="mc-name">James O.</div><div class="mc-bar-wrap"><div class="mc-bar" style="width:60%;background:var(--amber)"></div></div><div class="mc-pct">60%</div></div>
+              <div class="ms-client-row"><div class="mc-name">Linda K.</div><div class="mc-bar-wrap"><div class="mc-bar" style="width:85%;background:var(--teal2)"></div></div><div class="mc-pct">85%</div></div>
+              <div class="ms-client-row"><div class="mc-name">Robert A.</div><div class="mc-bar-wrap"><div class="mc-bar" style="width:100%;background:var(--teal2)"></div></div><div class="mc-pct">100%</div></div>
+            </div>
+            <div class="ms-alerts">
+              <div class="ms-sec-title">⚠ Active Alerts</div>
+              <div class="ms-alert-item"><div class="mai-icon">📦</div><div class="mai-text">James O. — Sertraline · 4 days left</div><div class="mai-time">09:14</div></div>
+              <div class="ms-alert-item"><div class="mai-icon">📦</div><div class="mai-text">Linda K. — Metformin · 6 days left</div><div class="mai-time">08:52</div></div>
+              <div class="ms-alert-item" style="border-color:rgba(232,83,74,0.3);background:rgba(232,83,74,0.06)"><div class="mai-icon">💊</div><div class="mai-text" style="color:#fca5a5">James O. — Refused morning dose</div><div class="mai-time">08:30</div></div>
+            </div>
+            <div class="ms-shift-card msc-am">
+              <div class="msc-header"><div class="msc-title">Shift Progress</div><div class="msc-tag">☀ AM — Active</div></div>
+              <div class="msc-progress">
+                <div class="msc-prog-row"><span style="width:50px">MAR</span><div class="msc-prog-bar"><div class="msc-prog-fill" style="width:85%;background:var(--teal2)"></div></div><span>17/20</span></div>
+                <div class="msc-prog-row"><span style="width:50px">Tasks</span><div class="msc-prog-bar"><div class="msc-prog-fill" style="width:50%;background:var(--amber)"></div></div><span>4/8</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: MODULE MAP -->
+  <div class="animate" style="animation-delay:.35s">
+    <div class="sec-head">
+      <div class="sec-num" style="background:var(--sky)">3</div>
+      <div>
+        <h2>Paper → Digital Map</h2>
+        <p>Every paper process and its digital replacement inside CareFlow</p>
+      </div>
+    </div>
+    <div class="mm-grid">
+      <div class="mm-card"><div class="mc-icon">📋</div><div class="mc-title">MAR Chart</div><div class="mc-replaces">Handwritten paper sheet</div><div class="mc-arrow">↓</div><div class="mc-digital">Digital MAR · timestamped</div></div>
+      <div class="mm-card"><div class="mc-icon">💊</div><div class="mc-title">Stock Check</div><div class="mc-replaces">Manual flat-by-flat counting</div><div class="mc-arrow">↓</div><div class="mc-digital">Auto-deduct + alert system</div></div>
+      <div class="mm-card"><div class="mc-icon">🗂️</div><div class="mc-title">File Server</div><div class="mc-replaces">Monthly scanning & uploading</div><div class="mc-arrow">↓</div><div class="mc-digital">Cloud storage · auto PDF export</div></div>
+      <div class="mm-card"><div class="mc-icon">✅</div><div class="mc-title">Daily Tasks</div><div class="mc-replaces">Paper checklists, no trail</div><div class="mc-arrow">↓</div><div class="mc-digital">Digital task board + handover</div></div>
+      <div class="mm-card"><div class="mc-icon">🔥</div><div class="mc-title">Fire Safety</div><div class="mc-replaces">Paper fire safety folder</div><div class="mc-arrow">↓</div><div class="mc-digital">Digital log · inspector export</div></div>
+      <div class="mm-card"><div class="mc-icon">🪪</div><div class="mc-title">Visitor Book</div><div class="mc-replaces">Paper sign-in book</div><div class="mc-arrow">↓</div><div class="mc-digital">Digital sign-in · searchable</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
