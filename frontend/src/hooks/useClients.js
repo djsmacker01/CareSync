@@ -53,11 +53,12 @@ export function useClients() {
 
   // ── Add a new service user ──────────────────────────────────────
   const addClient = useCallback(async ({ full_name, room_number, date_of_birth, notes }) => {
+    const flat = room_number?.toString().replace(/\D/g, '').trim() || null
     const { data, error: err } = await supabase
       .from('clients')
       .insert({
         full_name:     full_name.trim(),
-        room_number:   room_number?.trim() || null,
+        room_number:   flat,
         date_of_birth: date_of_birth || null,
         notes:         notes?.trim() || null,
         is_active:     true,
@@ -74,11 +75,12 @@ export function useClients() {
 
   // ── Update client details ───────────────────────────────────────
   const updateClient = useCallback(async (id, updates) => {
+    const flat = updates.room_number?.toString().replace(/\D/g, '').trim() || null
     const { data, error: err } = await supabase
       .from('clients')
       .update({
         full_name:     updates.full_name?.trim(),
-        room_number:   updates.room_number?.trim() || null,
+        room_number:   flat,
         date_of_birth: updates.date_of_birth || null,
         notes:         updates.notes?.trim() || null,
       })

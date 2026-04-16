@@ -87,7 +87,7 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
         <div className="flex-1">
           <h1 className="text-xl font-black text-gray-900">{client.full_name}</h1>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-gray-400">Flat {client.room_number}</span>
+            <span className="text-xs text-gray-400">Flat {String(client.room_number || '').replace(/\D/g, '')}</span>
             <ShiftBadge shift={shift} />
             {pending > 0 && (
               <span className="text-xs font-bold text-pending">{pending} remaining</span>
