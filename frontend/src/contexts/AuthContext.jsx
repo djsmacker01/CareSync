@@ -76,9 +76,25 @@ export function AuthProvider({ children }) {
       if (mounted) setLoading(false)
     })
 
+    // Fallback path: in rare cases INITIAL_SESSION can be delayed/missed.
+    // Querying once avoids getting stuck in a signed-out-looking state.
+    const sessionFallbackTimer = setTimeout(async () => {
+      if (!mounted) return
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession()
+        if (!mounted || !currentSession) return
+        if (mounted) setSession(currentSession)
+        await hydrateUser(currentSession)
+        if (mounted) setLoading(false)
+      } catch {
+        // Non-critical: safetyTimer still clears loading state
+      }
+    }, 1200)
+
     return () => {
       mounted = false
       clearTimeout(safetyTimer)
+      clearTimeout(sessionFallbackTimer)
       subscription.unsubscribe()
     }
   }, [])
