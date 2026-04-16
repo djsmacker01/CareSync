@@ -37,7 +37,7 @@ export default function ActiveVisitorCard({ visitor, onSignOut, readonly }) {
           <div className="font-bold text-gray-900">{visitor.visitor_name}</div>
           <div className="text-xs text-gray-500">
             Visiting <span className="font-semibold">{client?.full_name}</span>
-            {client?.room_number && <span className="text-gray-400"> · Flat {client.room_number}</span>}
+            {client?.room_number && <span className="text-gray-400"> · Flat {String(client.room_number).replace(/\D/g, '')}</span>}
           </div>
         </div>
         <span className="text-xs font-bold px-2 py-1 rounded-full bg-orange-100 text-orange-700 shrink-0 tabular-nums">
