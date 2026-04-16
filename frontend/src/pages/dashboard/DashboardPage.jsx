@@ -105,8 +105,9 @@ export default function DashboardPage() {
   const { data, loading, error, fetchSummary } = useDashboard()
 
   const now = new Date()
-  const [reportMonth, setReportMonth] = useState(now.getMonth())
-  const [reportYear,  setReportYear]  = useState(now.getFullYear())
+  const [reportMonth,      setReportMonth]      = useState(now.getMonth())
+  const [reportYear,       setReportYear]        = useState(now.getFullYear())
+  const [showReportModal,  setShowReportModal]   = useState(false)
 
   useEffect(() => { fetchSummary() }, [fetchSummary])
 
@@ -393,13 +394,47 @@ export default function DashboardPage() {
             ))}
           </select>
           <button
-            onClick={() => window.print()}
+            onClick={() => setShowReportModal(true)}
             className="min-h-[40px] px-4 rounded-xl bg-teal text-white text-sm font-bold hover:bg-teal/90 transition-colors"
           >
             Generate Report
           </button>
         </div>
       </Section>
+
+      {/* ── Report coming-soon modal ── */}
+      {showReportModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setShowReportModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="text-5xl">📄</div>
+            <h2 className="text-xl font-black text-gray-900">PDF Reports</h2>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Automated PDF generation for{' '}
+              <span className="font-semibold text-gray-700">
+                {MONTHS[reportMonth]} {reportYear}
+              </span>{' '}
+              is coming in the next release. Reports will include MAR records, stock
+              transactions, task completion, fire checks, and visitor logs — ready for
+              CQC inspection.
+            </p>
+            <div className="bg-teal/10 rounded-2xl px-4 py-3 text-sm text-teal font-semibold">
+              Planned: CQC Evidence Pack · Monthly Summary · Incident Log
+            </div>
+            <button
+              onClick={() => setShowReportModal(false)}
+              className="w-full min-h-[48px] rounded-xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
