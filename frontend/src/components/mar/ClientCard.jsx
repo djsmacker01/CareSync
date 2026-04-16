@@ -19,7 +19,7 @@ export default function ClientCard({ client, onClick }) {
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="font-bold text-gray-900 text-base">{full_name}</div>
-          <div className="text-xs text-gray-400 mt-0.5">Flat {room_number}</div>
+          <div className="text-xs text-gray-400 mt-0.5">Flat {String(room_number || '').replace(/\D/g, '')}</div>
         </div>
 
         {/* Status icon */}
