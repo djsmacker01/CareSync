@@ -171,7 +171,7 @@ export default function StockPage() {
           <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
             <div>
               <span className="font-bold text-gray-900">{client.full_name}</span>
-              <span className="text-xs text-gray-400 ml-2">Room {client.room_number}</span>
+              <span className="text-xs text-gray-400 ml-2">Flat {client.room_number}</span>
             </div>
             <span className="text-xs text-gray-400">{client.stock.length} meds</span>
           </div>

@@ -16,11 +16,11 @@ test.describe('MAR page', () => {
     await expect(page.getByRole('heading', { name: /medication/i })).toBeVisible({ timeout: 10_000 })
   })
 
-  test('shows AM / PM shift tabs or filter', async ({ page }) => {
+  test('shows Morning / Afternoon shift tabs or filter', async ({ page }) => {
     // Page should have some shift indicator
-    const amEl = page.getByText(/AM/i).first()
-    const pmEl = page.getByText(/PM/i).first()
-    const hasShift = (await amEl.isVisible()) || (await pmEl.isVisible())
+    const morningEl   = page.getByText(/Morning/i).first()
+    const afternoonEl = page.getByText(/Afternoon/i).first()
+    const hasShift = (await morningEl.isVisible()) || (await afternoonEl.isVisible())
     expect(hasShift).toBe(true)
   })
 

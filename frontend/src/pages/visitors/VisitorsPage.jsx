@@ -201,7 +201,7 @@ export default function VisitorsPage() {
                       <span className="font-bold text-sm text-gray-900">{v.visitor_name}</span>
                       <span className="text-xs font-semibold text-gray-500">
                         → {client?.full_name}
-                        {client?.room_number && ` · Rm ${client.room_number}`}
+                        {client?.room_number && ` · Flat ${client.room_number}`}
                       </span>
                     </div>
                     <div className="text-xs text-gray-400 mt-0.5">

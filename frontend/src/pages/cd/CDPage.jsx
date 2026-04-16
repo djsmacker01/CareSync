@@ -139,7 +139,7 @@ export default function CDPage() {
             <option value="">— Choose a resident —</option>
             {(clients || []).map(c => (
               <option key={c.id} value={c.id}>
-                {c.full_name}{c.room_number ? ` (Room ${c.room_number})` : ''}
+                {c.full_name}{c.room_number ? ` (Flat ${c.room_number})` : ''}
               </option>
             ))}
           </select>

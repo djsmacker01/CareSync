@@ -180,7 +180,7 @@ export default function ClientProfilePage() {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-sm text-gray-500">
                 {client.room_number && (
                   <span className="flex items-center gap-1 font-semibold text-gray-700">
-                    🏠 {client.room_number}
+                    🏠 Flat {client.room_number}
                   </span>
                 )}
                 {clientAge !== null && <span>{clientAge} years old</span>}

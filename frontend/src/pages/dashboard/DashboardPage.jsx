@@ -229,10 +229,10 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-4">
                 {d.tasks.am.expected > 0 && (
-                  <ShiftBar label="☀️ AM shift" done={d.tasks.am.done} total={d.tasks.am.expected} />
+                  <ShiftBar label="☀️ Morning shift" done={d.tasks.am.done} total={d.tasks.am.expected} />
                 )}
                 {d.tasks.pm.expected > 0 && (
-                  <ShiftBar label="🌙 PM shift" done={d.tasks.pm.done} total={d.tasks.pm.expected} />
+                  <ShiftBar label="🌙 Afternoon shift" done={d.tasks.pm.done} total={d.tasks.pm.expected} />
                 )}
               </div>
             )}
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                           {r.medications?.medication_name}
                         </span>
                         <span className="text-xs text-gray-400 ml-auto">
-                          {formatDate(r.administered_at)} {formatTime(r.administered_at)} · {r.shift}
+                          {formatDate(r.administered_at)} {formatTime(r.administered_at)} · {r.shift === 'AM' ? 'Morning' : r.shift === 'PM' ? 'Afternoon' : r.shift}
                         </span>
                       </div>
                       {r.refusal_reason && (
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                       <div key={shift} className="bg-blue-50 rounded-xl px-3 py-2 space-y-1">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-blue-700">
-                            {shift === 'AM' ? '☀️ AM' : '🌙 PM'} shift
+                            {shift === 'AM' ? '☀️ Morning' : '🌙 Afternoon'} shift
                           </span>
                           <span className="text-xs text-gray-400">
                             {note.users?.full_name || 'Staff'}
@@ -351,7 +351,7 @@ export default function DashboardPage() {
                         <span className="font-normal text-gray-500 ml-1">{s.medications?.dosage}</span>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {s.clients?.full_name} · Room {s.clients?.room_number}
+                        {s.clients?.full_name} · Flat {s.clients?.room_number}
                       </div>
                     </div>
                     <div className="text-right shrink-0">

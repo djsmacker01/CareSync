@@ -93,7 +93,7 @@ export default function MARPage() {
               shift === s ? 'bg-white text-navy shadow' : 'text-gray-400 hover:text-gray-600'
             }`}
           >
-            {s}
+            {s === 'AM' ? 'Morning' : s === 'PM' ? 'Afternoon' : 'Night'}
           </button>
         ))}
       </div>

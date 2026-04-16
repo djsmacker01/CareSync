@@ -84,6 +84,8 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
   }
 
   const nextShift = shift === 'AM' ? 'PM' : 'AM'
+  const shiftLabel = shift === 'AM' ? 'Morning' : 'Afternoon'
+  const nextShiftLabel = nextShift === 'AM' ? 'Morning' : 'Afternoon'
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -92,7 +94,7 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
         <div className="px-6 pt-6 pb-4 border-b border-gray-100 flex items-center justify-between shrink-0">
           <div>
             <div className="text-xs font-bold text-pending uppercase tracking-wider mb-1">Shift Handover</div>
-            <h2 className="text-lg font-bold text-gray-900">{shift} → {nextShift} Handover Note</h2>
+            <h2 className="text-lg font-bold text-gray-900">{shiftLabel} → {nextShiftLabel} Handover Note</h2>
           </div>
           <button onClick={onClose} className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-400 font-bold hover:bg-gray-50">✕</button>
         </div>
@@ -143,7 +145,7 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
 
               {saved && (
                 <div className="bg-given/10 border border-given/20 text-given text-sm rounded-xl px-4 py-3 font-medium">
-                  ✓ Handover note saved — {nextShift} staff will see this on login.
+                  ✓ Handover note saved — {nextShiftLabel} staff will see this on login.
                 </div>
               )}
             </>

@@ -150,7 +150,7 @@ export default function TasksPage() {
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
               <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">
-                Handover from {handoverNote.shift} shift · {handoverNote.users?.full_name || 'Staff'}
+                Handover from {handoverNote.shift === 'AM' ? 'Morning' : handoverNote.shift === 'PM' ? 'Afternoon' : handoverNote.shift} shift · {handoverNote.users?.full_name || 'Staff'}
               </div>
               <pre className="text-sm text-blue-800 whitespace-pre-wrap font-sans leading-relaxed">
                 {handoverNote.content}
@@ -178,7 +178,7 @@ export default function TasksPage() {
             className={`flex-1 min-h-[44px] rounded-lg text-sm font-bold transition-all ${
               shift === s ? 'bg-white text-navy shadow' : 'text-gray-400 hover:text-gray-600'
             }`}>
-            {s === 'AM' ? '☀️ AM (08:00–16:00)' : '🌙 PM (14:00–22:00)'}
+            {s === 'AM' ? '☀️ Morning (08:00–16:00)' : '🌙 Afternoon (14:00–22:00)'}
           </button>
         ))}
       </div>
@@ -187,7 +187,7 @@ export default function TasksPage() {
       {data && (
         <div className="bg-white rounded-2xl border-2 border-gray-200 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-bold text-gray-700">{shift} shift progress</span>
+            <span className="text-sm font-bold text-gray-700">{shift === 'AM' ? 'Morning' : 'Afternoon'} shift progress</span>
             <span className="text-sm font-bold text-teal">{completed}/{total} tasks</span>
           </div>
           <div className="h-3 bg-gray-100 rounded-full overflow-hidden">

@@ -7,8 +7,8 @@ import SyncBanner from './SyncBanner'
 
 // ── Live clock ──────────────────────────────────────────────────────────────
 function getShift(h) {
-  if (h >= 8  && h < 14) return { label: 'AM Shift',  color: 'text-teal2'        }
-  if (h >= 14 && h < 22) return { label: 'PM Shift',  color: 'text-amber-300'    }
+  if (h >= 8  && h < 14) return { label: 'Morning Shift',   color: 'text-teal2'       }
+  if (h >= 14 && h < 22) return { label: 'Afternoon Shift', color: 'text-amber-300'   }
   return                         { label: 'Night',     color: 'text-indigo-300'   }
 }
 

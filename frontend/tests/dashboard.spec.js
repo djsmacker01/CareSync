@@ -32,7 +32,7 @@ test.describe('Manager Dashboard', () => {
 
   test('shows shift progress section', async ({ page }) => {
     await expect(
-      page.getByText(/AM|PM/).first()
+      page.getByText(/Morning|Afternoon/).first()
     ).toBeVisible({ timeout: 10_000 })
   })
 

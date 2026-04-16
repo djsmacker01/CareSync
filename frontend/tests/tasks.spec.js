@@ -17,13 +17,13 @@ test.describe('Tasks page', () => {
     ).toBeVisible({ timeout: 10_000 })
   })
 
-  test('shows AM and PM shift sections', async ({ page }) => {
-    await expect(page.getByText(/AM/i).first()).toBeVisible({ timeout: 10_000 })
-    await expect(page.getByText(/PM/i).first()).toBeVisible({ timeout: 10_000 })
+  test('shows Morning and Afternoon shift sections', async ({ page }) => {
+    await expect(page.getByText(/Morning/i).first()).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByText(/Afternoon/i).first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('seeded tasks are listed', async ({ page }) => {
-    const taskCards = page.locator('[class*="rounded-2xl"]').filter({ hasText: /AM|PM|Complete|Done|Handover/i })
+    const taskCards = page.locator('[class*="rounded-2xl"]').filter({ hasText: /Morning|Afternoon|Complete|Done|Handover/i })
     const hasTaskCards = await taskCards.count()
     const emptyState = page.getByText(/No tasks for this shift/i)
     const emptyVisible = await emptyState.isVisible().catch(() => false)

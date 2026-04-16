@@ -59,7 +59,7 @@ export default function AddTaskModal({ onConfirm, onCancel, loading }) {
                   className={`flex-1 min-h-[44px] rounded-xl border-2 text-sm font-bold transition-all ${
                     shift === s ? 'border-teal bg-teal/5 text-teal' : 'border-gray-200 text-gray-500 hover:border-gray-300'
                   }`}>
-                  {s}
+                  {s === 'AM' ? 'Morning' : s === 'PM' ? 'Afternoon' : 'Both'}
                 </button>
               ))}
             </div>
