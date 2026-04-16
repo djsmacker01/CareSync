@@ -1,3 +1,4 @@
+import { AlertTriangle, Clock } from 'lucide-react'
 import { CHECK_META } from '../../hooks/useFire'
 
 const STATUS_STYLES = {
@@ -20,6 +21,7 @@ function daysUntil(dateStr) {
 export default function CheckCard({ checkData, onLogCheck, readonly }) {
   const { check_type, latest, overdue } = checkData
   const meta    = CHECK_META[check_type]
+  const { Icon } = meta
   const styleSt = latest ? STATUS_STYLES[latest.status] : null
   const days    = daysUntil(latest?.next_due_date)
   const checkedByName = latest?.users?.full_name || 'Staff'
@@ -31,15 +33,17 @@ export default function CheckCard({ checkData, onLogCheck, readonly }) {
       {/* Top row: icon + title + status */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{meta.icon}</span>
+          <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+            <Icon className="w-5 h-5 text-gray-600" />
+          </div>
           <div>
             <div className="font-bold text-gray-900 text-sm leading-tight">{meta.label}</div>
             <div className="text-xs text-gray-400">Every {meta.intervalDays} day{meta.intervalDays > 1 ? 's' : ''}</div>
           </div>
         </div>
         {overdue && (
-          <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-700 shrink-0">
-            ⚠ Overdue
+          <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-700 shrink-0 flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3" /> Overdue
           </span>
         )}
         {!overdue && styleSt && (
@@ -68,17 +72,18 @@ export default function CheckCard({ checkData, onLogCheck, readonly }) {
 
       {/* Next due */}
       {latest?.next_due_date && (
-        <div className={`text-xs font-semibold ${
+        <div className={`text-xs font-semibold flex items-center gap-1 ${
           overdue ? 'text-red-600' : days !== null && days <= 2 ? 'text-amber-600' : 'text-gray-500'
         }`}>
-          {overdue
-            ? `⚠ Was due ${formatDate(latest.next_due_date)}`
-            : days === 0
-              ? '⏰ Due today'
-              : days === 1
-                ? '⏰ Due tomorrow'
-                : `Next due ${formatDate(latest.next_due_date)}`
-          }
+          {overdue ? (
+            <><AlertTriangle className="w-3 h-3" /> Was due {formatDate(latest.next_due_date)}</>
+          ) : days === 0 ? (
+            <><Clock className="w-3 h-3" /> Due today</>
+          ) : days === 1 ? (
+            <><Clock className="w-3 h-3" /> Due tomorrow</>
+          ) : (
+            `Next due ${formatDate(latest.next_due_date)}`
+          )}
         </div>
       )}
 
@@ -86,13 +91,14 @@ export default function CheckCard({ checkData, onLogCheck, readonly }) {
       {!readonly && (
         <button
           onClick={() => onLogCheck(check_type)}
-          className={`w-full min-h-[44px] rounded-xl text-sm font-bold transition-all active:scale-95 ${
+          className={`w-full min-h-[44px] rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center justify-center gap-2 ${
             overdue
               ? 'bg-red-600 text-white hover:bg-red-700'
               : 'bg-teal text-white hover:bg-teal/90'
           }`}
         >
-          {overdue ? '⚠ Log Check Now' : 'Log Check'}
+          {overdue && <AlertTriangle className="w-4 h-4" />}
+          {overdue ? 'Log Check Now' : 'Log Check'}
         </button>
       )}
     </div>

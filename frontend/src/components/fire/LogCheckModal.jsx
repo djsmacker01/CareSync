@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
+import { Check, X, AlertTriangle } from 'lucide-react'
 import { CHECK_TYPES, CHECK_META } from '../../hooks/useFire'
 
 const STATUS_OPTIONS = [
-  { value: 'pass',            label: '✓  Pass',            style: 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200' },
-  { value: 'fail',            label: '✗  Fail',            style: 'bg-red-100   text-red-800   border-red-300   hover:bg-red-200'   },
-  { value: 'action_required', label: '⚠  Action Required', style: 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200' },
+  { value: 'pass',            label: 'Pass',            Icon: Check,         style: 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200' },
+  { value: 'fail',            label: 'Fail',            Icon: X,             style: 'bg-red-100   text-red-800   border-red-300   hover:bg-red-200'   },
+  { value: 'action_required', label: 'Action Required', Icon: AlertTriangle, style: 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200' },
 ]
 
 export default function LogCheckModal({ initialType, onConfirm, onCancel, loading }) {
@@ -39,8 +40,8 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 id="log-check-title" className="text-xl font-black text-gray-900">Log Fire Safety Check</h2>
-          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center text-xl font-bold">
-            ✕
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -53,6 +54,7 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
             <div className="grid grid-cols-2 gap-2">
               {CHECK_TYPES.map(type => {
                 const meta = CHECK_META[type]
+                const { Icon } = meta
                 return (
                   <button
                     key={type}
@@ -64,7 +66,7 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
                         : 'border-gray-200 text-gray-600 hover:border-gray-300'
                     }`}
                   >
-                    <span>{meta.icon}</span>
+                    <Icon className="w-4 h-4 shrink-0" />
                     <span className="text-left leading-tight">{meta.label}</span>
                   </button>
                 )
@@ -83,12 +85,13 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
                   key={opt.value}
                   type="button"
                   onClick={() => setStatus(opt.value)}
-                  className={`min-h-[52px] rounded-xl border-2 text-sm font-bold transition-all px-4 flex items-center ${
+                  className={`min-h-[52px] rounded-xl border-2 text-sm font-bold transition-all px-4 flex items-center gap-2 ${
                     status === opt.value
                       ? `${opt.style} border-current scale-[1.02]`
                       : 'border-gray-200 text-gray-500 hover:border-gray-300'
                   }`}
                 >
+                  <opt.Icon className="w-4 h-4 shrink-0" />
                   {opt.label}
                 </button>
               ))}
@@ -111,7 +114,8 @@ export default function LogCheckModal({ initialType, onConfirm, onCancel, loadin
 
           {/* Error */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
               {error}
             </div>
           )}

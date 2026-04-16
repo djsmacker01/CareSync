@@ -194,7 +194,7 @@ export default function DashboardPage() {
 
             {/* Stock */}
             <StatCard
-              icon="📦"
+              Icon={Package}
               label="Stock Alerts"
               value={d.lowStock.length}
               sub={d.lowStock.length === 0 ? 'All items above threshold' : `${d.lowStock.length} item${d.lowStock.length > 1 ? 's' : ''} at or below reorder level`}
@@ -204,9 +204,9 @@ export default function DashboardPage() {
 
             {/* Fire */}
             <StatCard
-              icon="🔥"
+              Icon={Flame}
               label="Fire Safety"
-              value={d.fire.overdue === 0 ? '✓ Clear' : `${d.fire.overdue} overdue`}
+              value={d.fire.overdue === 0 ? 'Clear' : `${d.fire.overdue} overdue`}
               sub={d.fire.overdue === 0 ? 'All checks up to date' : 'Log outstanding checks now'}
               status={d.fire.overdue === 0 ? 'ok' : d.fire.overdue === 1 ? 'warn' : 'alert'}
               onClick={() => navigate('/fire')}
@@ -214,7 +214,7 @@ export default function DashboardPage() {
 
             {/* Visitors */}
             <StatCard
-              icon="👤"
+              Icon={UserCheck}
               label="Visitors"
               value={d.visitors.today}
               sub={
@@ -243,10 +243,10 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-4">
                 {d.tasks.am.expected > 0 && (
-                  <ShiftBar label="☀️ Morning shift" done={d.tasks.am.done} total={d.tasks.am.expected} />
+                  <ShiftBar label="Morning shift" LabelIcon={Sun} done={d.tasks.am.done} total={d.tasks.am.expected} />
                 )}
                 {d.tasks.pm.expected > 0 && (
-                  <ShiftBar label="🌙 Afternoon shift" done={d.tasks.pm.done} total={d.tasks.pm.expected} />
+                  <ShiftBar label="Afternoon shift" LabelIcon={Moon} done={d.tasks.pm.done} total={d.tasks.pm.expected} />
                 )}
               </div>
             )}
