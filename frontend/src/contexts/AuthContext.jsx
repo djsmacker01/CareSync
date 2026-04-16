@@ -86,6 +86,10 @@ export function AuthProvider({ children }) {
       if (newSession) {
         // Keep session state in sync immediately; profile hydration can finish shortly after.
         if (mounted) setSession(newSession)
+        // Clear the loading gate right away — ProtectedRoute can render
+        // the loading spinner independently while hydrateUser completes.
+        clearTimeout(safetyTimer)
+        if (mounted) setLoading(false)
         try {
           await hydrateUser(newSession)
         } catch (err) {
@@ -94,10 +98,9 @@ export function AuthProvider({ children }) {
         }
       } else {
         if (mounted) { setUser(null); setSession(null); setShowTimeoutWarn(false); setWarnDeadline(null) }
+        clearTimeout(safetyTimer)
+        if (mounted) setLoading(false)
       }
-
-      clearTimeout(safetyTimer)
-      if (mounted) setLoading(false)
     })
 
     // Fallback path: in rare cases INITIAL_SESSION can be delayed/missed.
