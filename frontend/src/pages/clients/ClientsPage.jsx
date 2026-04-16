@@ -162,7 +162,7 @@ export default function ClientsPage() {
                       {client.room_number && (
                         <span className="flex items-center gap-1">
                           <span>🏠</span>
-                          {client.room_number}
+                          Flat {String(client.room_number).replace(/\D/g, '')}
                         </span>
                       )}
                       {clientAge !== null && (

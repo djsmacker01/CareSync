@@ -351,7 +351,7 @@ export default function DashboardPage() {
                         <span className="font-normal text-gray-500 ml-1">{s.medications?.dosage}</span>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {s.clients?.full_name} · Flat {s.clients?.room_number}
+                        {s.clients?.full_name} · Flat {String(s.clients?.room_number || '').replace(/\D/g, '')}
                       </div>
                     </div>
                     <div className="text-right shrink-0">
