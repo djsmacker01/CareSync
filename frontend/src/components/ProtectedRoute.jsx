@@ -16,9 +16,9 @@ const ROLE_HOME = {
  * @param {string[]} [roles] - If provided, only these roles can access
  */
 export default function ProtectedRoute({ children, roles }) {
-  const { user, loading } = useAuth()
+  const { user, session, loading } = useAuth()
 
-  if (loading) {
+  if (loading || (session && !user)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-teal text-lg font-semibold animate-pulse">Loading…</div>
