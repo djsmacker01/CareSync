@@ -6,6 +6,7 @@ import LiveBadge from '../../components/LiveBadge'
 import TaskItem from '../../components/tasks/TaskItem'
 import AddTaskModal from '../../components/tasks/AddTaskModal'
 import HandoverModal from '../../components/tasks/HandoverModal'
+import { Sun, Moon, CheckCircle2, PartyPopper, Clock, X } from 'lucide-react'
 
 const TASK_SUBS = [
   { table: 'task_completions', event: '*' },
@@ -157,8 +158,8 @@ export default function TasksPage() {
               </pre>
             </div>
             <button onClick={() => setHNote(null)}
-              className="text-blue-300 hover:text-blue-500 font-bold min-h-[32px] min-w-[32px] flex items-center justify-center">
-              ✕
+              className="text-blue-300 hover:text-blue-500 min-h-[32px] min-w-[32px] flex items-center justify-center rounded-lg hover:bg-blue-100 transition-colors">
+              <X className="w-4 h-4" />
             </button>
           </div>
           {handoverNote.flags?.length > 0 && (
@@ -175,10 +176,11 @@ export default function TasksPage() {
       <div className="flex bg-gray-100 rounded-xl p-1">
         {['AM', 'PM'].map(s => (
           <button key={s} onClick={() => setShift(s)}
-            className={`flex-1 min-h-[44px] rounded-lg text-sm font-bold transition-all ${
+            className={`flex-1 min-h-[44px] rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 ${
               shift === s ? 'bg-white text-navy shadow' : 'text-gray-400 hover:text-gray-600'
             }`}>
-            {s === 'AM' ? '☀️ Morning (08:00–16:00)' : '🌙 Afternoon (14:00–22:00)'}
+            {s === 'AM' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {s === 'AM' ? 'Morning (08:00–16:00)' : 'Afternoon (14:00–22:00)'}
           </button>
         ))}
       </div>
@@ -253,7 +255,7 @@ export default function TasksPage() {
 
       {!loading && tasks.length === 0 && !error && (
         <div className="text-center py-16 text-gray-400">
-          <div className="text-4xl mb-3">✅</div>
+          <CheckCircle2 className="w-10 h-10 mx-auto mb-3 text-gray-300" />
           <p className="font-medium">No tasks for this shift</p>
           {canManage && <p className="text-sm mt-1">Tap "+ Add" to create tasks</p>}
         </div>
@@ -262,8 +264,8 @@ export default function TasksPage() {
       {/* All done + handover prompt */}
       {!loading && total > 0 && completed === total && (
         <div className="bg-given/10 border-2 border-given/30 rounded-2xl p-4 text-center space-y-3">
-          <div className="text-2xl">🎉</div>
-          <div className="font-bold text-given">All {shift} tasks complete!</div>
+          <PartyPopper className="w-8 h-8 text-given mx-auto" />
+          <div className="font-bold text-given">All {shift === 'AM' ? 'Morning' : 'Afternoon'} tasks complete!</div>
           {!readonly && (
             <button onClick={() => setHandover(true)}
               className="w-full min-h-[52px] rounded-xl bg-navy text-white font-bold text-sm hover:bg-navy/90 transition-colors">
@@ -276,7 +278,7 @@ export default function TasksPage() {
       {/* Handover prompt during overlap window */}
       {!loading && isHandoverTime() && shift === 'AM' && completed < total && !readonly && (
         <div className="bg-pending/10 border-2 border-pending/30 rounded-2xl p-4">
-          <div className="font-bold text-pending text-sm mb-1">⏰ Overlap window — handover time</div>
+          <div className="font-bold text-pending text-sm mb-1 flex items-center gap-1.5"><Clock className="w-4 h-4" /> Overlap window — handover time</div>
           <div className="text-xs text-pending/80 mb-3">{pendingCount} task{pendingCount > 1 ? 's' : ''} still pending</div>
           <button onClick={() => setHandover(true)}
             className="w-full min-h-[48px] rounded-xl bg-pending text-white font-bold text-sm hover:bg-pending/90 transition-colors">

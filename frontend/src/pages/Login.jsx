@@ -344,7 +344,11 @@ export default function Login() {
 
             {resetSent ? (
               <div className="text-center space-y-3 py-4">
-                <div className="text-4xl">📧</div>
+                <div className="flex justify-center">
+                  <div className="w-14 h-14 rounded-full bg-teal/10 flex items-center justify-center">
+                    <Mail className="w-7 h-7 text-teal" />
+                  </div>
+                </div>
                 <p className="font-bold text-gray-900">Check your email</p>
                 <p className="text-sm text-gray-500">
                   A password reset link has been sent to{' '}

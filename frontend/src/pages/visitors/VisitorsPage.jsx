@@ -5,6 +5,7 @@ import { useRealtime } from '../../hooks/useRealtime'
 import LiveBadge from '../../components/LiveBadge'
 import ActiveVisitorCard from '../../components/visitors/ActiveVisitorCard'
 import SignInModal from '../../components/visitors/SignInModal'
+import { CheckCircle2, User, ClipboardList } from 'lucide-react'
 
 const VISITOR_SUBS = [{ table: 'visitors', event: '*' }]
 
@@ -147,7 +148,7 @@ export default function VisitorsPage() {
 
           {activeCount === 0 ? (
             <div className="bg-green-50 border-2 border-green-200 rounded-2xl px-4 py-5 text-center">
-              <div className="text-2xl mb-1">✅</div>
+              <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-1" />
               <div className="text-sm font-semibold text-green-700">No visitors currently in the building</div>
             </div>
           ) : (
@@ -180,7 +181,7 @@ export default function VisitorsPage() {
 
         {history !== null && history.length === 0 && (
           <div className="text-center py-10 text-gray-400">
-            <div className="text-3xl mb-2">📋</div>
+            <ClipboardList className="w-8 h-8 mx-auto mb-2 text-gray-300" />
             <p className="text-sm font-medium">No visits recorded for this date</p>
           </div>
         )}
@@ -195,7 +196,9 @@ export default function VisitorsPage() {
                   key={v.id}
                   className="bg-white rounded-2xl border-2 border-gray-200 px-4 py-3 flex items-start gap-3"
                 >
-                  <div className="text-xl shrink-0 mt-0.5">👤</div>
+                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <User className="w-4 h-4 text-gray-400" />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-sm text-gray-900">{v.visitor_name}</span>

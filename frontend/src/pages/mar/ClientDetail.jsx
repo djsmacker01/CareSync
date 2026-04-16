@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import MedicationRow from '../../components/mar/MedicationRow'
 import RefusalModal from '../../components/mar/RefusalModal'
 import ShiftBadge from '../../components/mar/ShiftBadge'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 
 export default function ClientDetail({ client, shift, onBack, onEntry, readonly }) {
   const { user } = useAuth()
@@ -80,9 +81,9 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-500 font-bold text-lg hover:bg-gray-50 transition-colors"
+          className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center"
         >
-          ←
+          <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-black text-gray-900">{client.full_name}</h1>
@@ -129,7 +130,7 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
       {/* All done banner */}
       {pending === 0 && client.medications.length > 0 && (
         <div className="rounded-2xl bg-given/10 border-2 border-given/30 p-4 text-center">
-          <div className="text-2xl mb-1">✅</div>
+          <CheckCircle2 className="w-8 h-8 text-given mx-auto mb-1" />
           <div className="font-bold text-given">All medications recorded</div>
           <div className="text-xs text-given/70 mt-0.5">
             {client.given} given · {client.refused} refused

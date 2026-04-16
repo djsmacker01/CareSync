@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import * as Sentry from '@sentry/react'
+import { AlertTriangle } from 'lucide-react'
 
 /**
  * Top-level error boundary.
@@ -33,7 +34,11 @@ export default class ErrorBoundary extends Component {
     return (
       <div className="min-h-screen bg-navy flex flex-col items-center justify-center px-4 text-center">
         <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full space-y-5">
-          <div className="text-5xl">⚠️</div>
+          <div className="flex justify-center">
+            <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center">
+              <AlertTriangle className="w-8 h-8 text-amber-500" />
+            </div>
+          </div>
           <div>
             <h1 className="text-xl font-black text-gray-900">Something went wrong</h1>
             <p className="text-sm text-gray-500 mt-2">

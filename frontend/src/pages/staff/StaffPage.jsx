@@ -4,6 +4,7 @@ import { useStaff } from '../../hooks/useStaff'
 import AddStaffModal from '../../components/staff/AddStaffModal'
 import EditStaffModal from '../../components/staff/EditStaffModal'
 import SetPinModal from '../../components/staff/SetPinModal'
+import { Search, Users, AlertTriangle, Pencil, Lock, LockOpen, RefreshCw } from 'lucide-react'
 
 const ROLE_BADGE = {
   staff:      { label: 'Staff',      color: 'bg-blue-100 text-blue-800'     },
@@ -150,7 +151,7 @@ export default function StaffPage() {
       {/* Search + filter */}
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[180px]">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">🔍</span>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
           <input
             type="search"
             placeholder="Search by name, email or role…"
@@ -194,7 +195,7 @@ export default function StaffPage() {
         <div className="space-y-3">
           {visible.length === 0 && (
             <div className="text-center py-16 text-gray-400">
-              <div className="text-4xl mb-3">👥</div>
+              <Users className="w-10 h-10 text-gray-300 mx-auto mb-3" />
               {search
                 ? <p className="text-sm">No staff match &ldquo;{search}&rdquo;</p>
                 : <p className="text-sm">No staff in this filter</p>
@@ -246,8 +247,9 @@ export default function StaffPage() {
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${rb.color}`}>
                         {rb.label}
                       </span>
-                      <span className="text-[10px] text-gray-400">
-                        {member.has_pin ? '🔐 PIN set' : '🔓 No PIN'}
+                      <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                        {member.has_pin ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                        {member.has_pin ? 'PIN set' : 'No PIN'}
                       </span>
                     </div>
                   </div>
@@ -256,15 +258,16 @@ export default function StaffPage() {
                   <div className="flex flex-col gap-1.5 shrink-0">
                     <button
                       onClick={() => setEditTarget(member)}
-                      className="min-h-[34px] px-3 rounded-lg border border-gray-200 text-gray-600 text-[11px] font-bold hover:bg-gray-50 transition-colors"
+                      className="min-h-[34px] px-3 rounded-lg border border-gray-200 text-gray-600 text-[11px] font-bold hover:bg-gray-50 transition-colors flex items-center gap-1"
                     >
-                      ✏️ Edit
+                      <Pencil className="w-3 h-3" /> Edit
                     </button>
                     <button
                       onClick={() => setPinTarget(member)}
-                      className="min-h-[34px] px-3 rounded-lg border border-gray-200 text-gray-600 text-[11px] font-bold hover:bg-gray-50 transition-colors"
+                      className="min-h-[34px] px-3 rounded-lg border border-gray-200 text-gray-600 text-[11px] font-bold hover:bg-gray-50 transition-colors flex items-center gap-1"
                     >
-                      {member.has_pin ? '🔄 PIN' : '🔐 PIN'}
+                      {member.has_pin ? <RefreshCw className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                      PIN
                     </button>
                     {!isSelf && (
                       member.is_active ? (
@@ -296,7 +299,11 @@ export default function StaffPage() {
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 space-y-4">
             <div className="text-center">
-              <div className="text-4xl mb-3">⚠️</div>
+              <div className="flex justify-center mb-3">
+                <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center">
+                  <AlertTriangle className="w-7 h-7 text-amber-500" />
+                </div>
+              </div>
               <h2 className="text-lg font-black text-gray-900">
                 Deactivate {confirmDeact.full_name}?
               </h2>

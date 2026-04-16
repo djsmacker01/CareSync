@@ -6,6 +6,7 @@ import LiveBadge from '../../components/LiveBadge'
 import StockLevelBadge, { stockStatus } from '../../components/stock/StockLevelBadge'
 import TransactionModal from '../../components/stock/TransactionModal'
 import TransactionHistory from '../../components/stock/TransactionHistory'
+import { AlertTriangle, Download, XCircle, Clock, Package, History } from 'lucide-react'
 
 const STOCK_SUBS = [
   { table: 'stock',              event: 'UPDATE' },
@@ -98,8 +99,8 @@ export default function StockPage() {
         </div>
         {canEdit && (
           <button onClick={handlePrint}
-            className="min-h-[44px] px-4 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 transition-colors print:hidden flex-shrink-0">
-            ⬇ Export
+            className="min-h-[44px] px-4 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 transition-colors print:hidden flex-shrink-0 flex items-center gap-2">
+            <Download className="w-4 h-4" /> Export
           </button>
         )}
       </div>
@@ -107,7 +108,9 @@ export default function StockPage() {
       {/* Alert banner */}
       {criticalCount > 0 && (
         <div className="bg-refused/10 border-2 border-refused/30 rounded-2xl px-4 py-3 flex items-center gap-3">
-          <span className="text-2xl">⚠️</span>
+          <div className="w-9 h-9 rounded-xl bg-refused/10 flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-5 h-5 text-refused" />
+          </div>
           <div>
             <div className="font-bold text-refused text-sm">
               {criticalCount} medication{criticalCount > 1 ? 's' : ''} at or below reorder threshold
@@ -138,13 +141,14 @@ export default function StockPage() {
         <div className="flex bg-gray-100 rounded-xl p-1">
           {[
             { value: 'all',      label: 'All' },
-            { value: 'critical', label: `🔴 Critical${criticalCount ? ` (${criticalCount})` : ''}` },
-            { value: 'low',      label: `🟡 Low${lowCount ? ` (${lowCount})` : ''}` },
+            { value: 'critical', label: `Critical${criticalCount ? ` (${criticalCount})` : ''}`, Icon: XCircle   },
+            { value: 'low',      label: `Low${lowCount ? ` (${lowCount})` : ''}`,                 Icon: Clock      },
           ].map(f => (
             <button key={f.value} onClick={() => setFilter(f.value)}
-              className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+              className={`min-h-[36px] px-3 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1 ${
                 filter === f.value ? 'bg-white text-navy shadow' : 'text-gray-400 hover:text-gray-600'
               }`}>
+              {f.Icon && <f.Icon className={`w-3 h-3 ${f.value === 'critical' ? 'text-refused' : f.value === 'low' ? 'text-pending' : ''}`} />}
               {f.label}
             </button>
           ))}
@@ -208,10 +212,10 @@ export default function StockPage() {
                   <div className="flex gap-2 justify-end">
                     <button
                       onClick={() => setHistory(s.id)}
-                      className="min-h-[36px] px-3 rounded-lg border border-gray-200 text-gray-400 text-xs font-medium hover:bg-gray-50 transition-colors"
+                      className="min-h-[36px] px-3 rounded-lg border border-gray-200 text-gray-400 text-xs font-medium hover:bg-gray-50 transition-colors flex items-center gap-1"
                       title="View transaction history"
                     >
-                      📋 History
+                      <History className="w-3.5 h-3.5" /> History
                     </button>
                     {canEdit && (
                       <button
@@ -231,7 +235,7 @@ export default function StockPage() {
 
       {!loading && filteredClients.length === 0 && !error && (
         <div className="text-center py-16 text-gray-400">
-          <div className="text-4xl mb-3">📦</div>
+          <Package className="w-10 h-10 mx-auto mb-3 text-gray-300" />
           <p className="font-medium">No stock records found</p>
           {(search || filter !== 'all') && <p className="text-sm mt-1">Try clearing filters</p>}
         </div>

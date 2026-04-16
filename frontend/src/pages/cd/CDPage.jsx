@@ -4,12 +4,13 @@ import { useClients } from '../../hooks/useClients'
 import { useCD } from '../../hooks/useCD'
 import AddEntryModal from '../../components/cd/AddEntryModal'
 import AddDrugModal  from '../../components/cd/AddDrugModal'
+import { Pill, Package, Trash2, RotateCcw, AlertTriangle, Printer } from 'lucide-react'
 
 const ENTRY_META = {
-  administered: { label: 'Administered', color: 'bg-green-100 text-green-800',  icon: '💊' },
-  received:     { label: 'Received',     color: 'bg-blue-100 text-blue-800',    icon: '📦' },
-  wasted:       { label: 'Wasted',       color: 'bg-red-100 text-red-800',      icon: '🗑️' },
-  returned:     { label: 'Returned',     color: 'bg-gray-100 text-gray-700',    icon: '↩️' },
+  administered: { label: 'Administered', color: 'bg-green-100 text-green-800', Icon: Pill      },
+  received:     { label: 'Received',     color: 'bg-blue-100 text-blue-800',   Icon: Package   },
+  wasted:       { label: 'Wasted',       color: 'bg-red-100 text-red-800',     Icon: Trash2    },
+  returned:     { label: 'Returned',     color: 'bg-gray-100 text-gray-700',   Icon: RotateCcw },
 }
 
 function fmt(ts) {
@@ -101,8 +102,8 @@ export default function CDPage() {
             Controlled Drugs — Schedule 2 &amp; 3 · Misuse of Drugs Regulations 2001
           </p>
         </div>
-        <span className="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full self-start">
-          ⚠️ Legal record — append only
+        <span className="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full self-start flex items-center gap-1.5">
+          <AlertTriangle className="w-3.5 h-3.5" /> Legal record — append only
         </span>
       </div>
 
@@ -149,7 +150,7 @@ export default function CDPage() {
       {/* ── Empty state ── */}
       {!clientId && (
         <div className="text-center py-16 text-gray-400">
-          <div className="text-5xl mb-4">💊</div>
+          <Pill className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p className="text-sm">Select a resident to view their CD register</p>
         </div>
       )}
@@ -260,9 +261,9 @@ export default function CDPage() {
                   </h3>
                   <button
                     onClick={() => window.print()}
-                    className="text-xs text-gray-400 font-semibold hover:text-gray-600"
+                    className="text-xs text-gray-400 font-semibold hover:text-gray-600 flex items-center gap-1"
                   >
-                    🖨️ Print
+                    <Printer className="w-3.5 h-3.5" /> Print
                   </button>
                 </div>
 
@@ -305,8 +306,8 @@ export default function CDPage() {
                           {/* Mobile */}
                           <div className="sm:hidden space-y-1.5">
                             <div className="flex items-center justify-between">
-                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${meta.color}`}>
-                                {meta.icon} {meta.label}
+                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 w-fit ${meta.color}`}>
+                                <meta.Icon className="w-3 h-3" /> {meta.label}
                               </span>
                               <span className="text-sm font-black text-gray-800 tabular-nums">
                                 {entry.balance_after} {activeDrug.unit}
@@ -331,8 +332,8 @@ export default function CDPage() {
                           {/* Desktop */}
                           <div className="hidden sm:grid grid-cols-[1fr_72px_72px_96px_160px] gap-3 items-center">
                             <div>
-                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${meta.color}`}>
-                                {meta.icon} {meta.label}
+                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 w-fit ${meta.color}`}>
+                                <meta.Icon className="w-3 h-3" /> {meta.label}
                               </span>
                               <div className="text-[11px] text-gray-400 mt-0.5">{fmt(entry.administered_at)}</div>
                               {entry.notes && (
