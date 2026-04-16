@@ -1,3 +1,4 @@
+import { Check, X, AlertTriangle } from 'lucide-react'
 import StatusPill from './StatusPill'
 
 export default function MedicationRow({ medication, onGiven, onRefused, onMissed, readonly, submitting }) {
@@ -22,10 +23,11 @@ export default function MedicationRow({ medication, onGiven, onRefused, onMissed
         <div className="flex flex-col items-end gap-1 shrink-0">
           <StatusPill status={status} />
           {lowStock && !isDone && (
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
               zeroStock ? 'bg-refused/10 text-refused' : 'bg-pending/10 text-pending'
             }`}>
-              {zeroStock ? '⚠ No stock' : `⚠ Low: ${stock.current_quantity} ${stock.unit}`}
+              <AlertTriangle className="w-3 h-3" />
+              {zeroStock ? 'No stock' : `Low: ${stock.current_quantity} ${stock.unit}`}
             </span>
           )}
         </div>
@@ -37,16 +39,16 @@ export default function MedicationRow({ medication, onGiven, onRefused, onMissed
           <button
             onClick={() => onGiven(medication)}
             disabled={submitting || zeroStock}
-            className="flex-1 min-h-[56px] rounded-xl bg-given text-white font-bold text-base active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 min-h-[56px] rounded-xl bg-given text-white font-bold text-base active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            ✓ Given
+            <Check className="w-5 h-5" /> Given
           </button>
           <button
             onClick={() => onRefused(medication)}
             disabled={submitting}
-            className="flex-1 min-h-[56px] rounded-xl bg-refused text-white font-bold text-base active:scale-95 transition-all disabled:opacity-40"
+            className="flex-1 min-h-[56px] rounded-xl bg-refused text-white font-bold text-base active:scale-95 transition-all disabled:opacity-40 flex items-center justify-center gap-2"
           >
-            ✗ Refused
+            <X className="w-5 h-5" /> Refused
           </button>
           <button
             onClick={() => onMissed(medication)}
