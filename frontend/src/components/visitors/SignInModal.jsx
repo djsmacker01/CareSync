@@ -79,7 +79,7 @@ export default function SignInModal({ clients, onConfirm, onCancel, loading }) {
               <option value="">Select resident…</option>
               {clients.map(c => (
                 <option key={c.id} value={c.id}>
-                  {c.full_name} — Flat {c.room_number}
+                  {c.full_name} — Flat {String(c.room_number || '').replace(/\D/g, '')}
                 </option>
               ))}
             </select>
