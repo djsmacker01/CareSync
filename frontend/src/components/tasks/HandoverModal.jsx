@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { X, CheckCircle2 } from 'lucide-react'
 
 export default function HandoverModal({ shift, fetchHandoverData, onSave, onClose, userId, loading: saving }) {
   const [handoverData, setHD]   = useState(null)
@@ -96,7 +97,7 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
             <div className="text-xs font-bold text-pending uppercase tracking-wider mb-1">Shift Handover</div>
             <h2 className="text-lg font-bold text-gray-900">{shiftLabel} → {nextShiftLabel} Handover Note</h2>
           </div>
-          <button onClick={onClose} className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-400 font-bold hover:bg-gray-50">✕</button>
+          <button onClick={onClose} className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-400 hover:bg-gray-50 flex items-center justify-center"><X className="w-4 h-4" /></button>
         </div>
 
         <div className="overflow-y-auto flex-1 px-6 py-4 space-y-4">
@@ -144,8 +145,9 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
               </div>
 
               {saved && (
-                <div className="bg-given/10 border border-given/20 text-given text-sm rounded-xl px-4 py-3 font-medium">
-                  ✓ Handover note saved — {nextShiftLabel} staff will see this on login.
+                <div className="bg-given/10 border border-given/20 text-given text-sm rounded-xl px-4 py-3 font-medium flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  Handover note saved — {nextShiftLabel} staff will see this on login.
                 </div>
               )}
             </>

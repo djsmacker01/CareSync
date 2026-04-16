@@ -1,3 +1,5 @@
+import { Check, X } from 'lucide-react'
+
 export default function TaskItem({ task, shift, onComplete, onUncomplete, onDeactivate, canManage, submitting }) {
   const { id, title, description, completed, completion } = task
 
@@ -20,7 +22,7 @@ export default function TaskItem({ task, shift, onComplete, onUncomplete, onDeac
         }`}
         aria-label={completed ? 'Mark incomplete' : 'Mark complete'}
       >
-        {completed && <span className="text-sm font-black">✓</span>}
+        {completed && <Check className="w-4 h-4" />}
       </button>
 
       {/* Content */}
@@ -43,10 +45,10 @@ export default function TaskItem({ task, shift, onComplete, onUncomplete, onDeac
       {canManage && !completed && (
         <button
           onClick={() => onDeactivate(task)}
-          className="shrink-0 min-h-[32px] min-w-[32px] rounded-lg text-gray-300 hover:text-refused hover:bg-refused/5 transition-colors text-xs"
+          className="shrink-0 min-h-[32px] min-w-[32px] rounded-lg text-gray-300 hover:text-refused hover:bg-refused/5 transition-colors flex items-center justify-center"
           title="Remove task"
         >
-          ✕
+          <X className="w-4 h-4" />
         </button>
       )}
     </div>
