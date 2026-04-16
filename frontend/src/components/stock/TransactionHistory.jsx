@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Pill, Package, Trash2, Pencil, X } from 'lucide-react'
 
 const TYPE_STYLE = {
-  administered: { label: 'Administered', color: 'text-teal',    icon: '💊' },
-  received:     { label: 'Received',     color: 'text-given',   icon: '📦' },
-  disposed:     { label: 'Disposed',     color: 'text-refused', icon: '🗑' },
-  adjustment:   { label: 'Adjustment',   color: 'text-info',    icon: '✏️' },
+  administered: { label: 'Administered', color: 'text-teal',    Icon: Pill    },
+  received:     { label: 'Received',     color: 'text-given',   Icon: Package },
+  disposed:     { label: 'Disposed',     color: 'text-refused', Icon: Trash2  },
+  adjustment:   { label: 'Adjustment',   color: 'text-info',    Icon: Pencil  },
 }
 
 export default function TransactionHistory({ stockId, fetchTransactions, onClose }) {
@@ -29,8 +30,8 @@ export default function TransactionHistory({ stockId, fetchTransactions, onClose
             <h2 className="text-lg font-bold text-gray-900">Stock History</h2>
           </div>
           <button onClick={onClose}
-            className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-400 font-bold hover:bg-gray-50 transition-colors">
-            ✕
+            className="min-h-[44px] min-w-[44px] rounded-xl border-2 border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors flex items-center justify-center">
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -50,7 +51,9 @@ export default function TransactionHistory({ stockId, fetchTransactions, onClose
             const positive = tx.quantity_change > 0
             return (
               <div key={tx.id} className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
-                <span className="text-xl mt-0.5">{t.icon}</span>
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center mt-0.5 shrink-0">
+                  <t.Icon className={`w-4 h-4 ${t.color}`} />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className={`text-sm font-bold ${t.color}`}>{t.label}</span>

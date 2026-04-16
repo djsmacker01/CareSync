@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { X, CheckCircle2, AlertTriangle, Eye, EyeOff } from 'lucide-react'
 
 const ROLES = [
   { value: 'staff',      label: 'Staff',       desc: 'Can record MAR, tasks, fire checks and visitors'   },
@@ -52,7 +53,11 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 space-y-5">
           <div className="text-center">
-            <div className="text-4xl mb-2">🎉</div>
+            <div className="flex justify-center mb-3">
+              <div className="w-14 h-14 rounded-full bg-given/10 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-given" />
+              </div>
+            </div>
             <h2 className="text-xl font-black text-gray-900">Account created!</h2>
             <p className="text-sm text-gray-500 mt-1">
               Share these credentials with <span className="font-semibold text-gray-700">{created.staff.full_name}</span>
@@ -65,8 +70,9 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
             {form.pin && <Credential label="PIN" value={form.pin} secret />}
           </div>
 
-          <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
-            ⚠️ Write these down now — the password won't be shown again. The staff member should change it on first login.
+          <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2">
+            <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+            Write these down now — the password won't be shown again. The staff member should change it on first login.
           </p>
 
           <button
@@ -92,7 +98,7 @@ export default function AddStaffModal({ onSave, onCreated, onClose }) {
             className="min-h-[40px] min-w-[40px] flex items-center justify-center text-gray-400 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-colors"
             aria-label="Close"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -203,10 +209,10 @@ function Credential({ label, value, secret }) {
           <button
             type="button"
             onClick={() => setVisible(v => !v)}
-            className="text-gray-400 hover:text-gray-600 text-lg shrink-0"
+            className="text-gray-400 hover:text-gray-600 shrink-0 min-h-[32px] min-w-[32px] flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
             title={visible ? 'Hide' : 'Show'}
           >
-            {visible ? '🙈' : '👁️'}
+            {visible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         )}
       </div>
