@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
 
   const warnTimer      = useRef(null)
   const logoutTimer    = useRef(null)
-  const isHydrating    = useRef(false)
+  const hydratingPromise = useRef(null)
 
   // ── Timeout management ────────────────────────────────────
   const clearTimers = useCallback(() => {
@@ -60,6 +60,8 @@ export function AuthProvider({ children }) {
       if (!mounted) return
 
       if (newSession) {
+        // Keep session state in sync immediately; profile hydration can finish shortly after.
+        if (mounted) setSession(newSession)
         try {
           await hydrateUser(newSession)
         } catch (err) {
@@ -82,10 +84,17 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function hydrateUser(session) {
-    if (isHydrating.current) return
-    isHydrating.current = true
+    if (!session?.user?.id) {
+      setUser(null)
+      setSession(null)
+      return
+    }
 
-    try {
+    if (hydratingPromise.current) {
+      return hydratingPromise.current
+    }
+
+    const hydrate = (async () => {
       setSession(session)
 
       // Always read the full profile from DB — this gives us full_name + role
@@ -119,9 +128,13 @@ export function AuthProvider({ children }) {
       // No profile found — sign out and surface a clear error
       await supabase.auth.signOut()
       throw new Error('Account not found. Please contact an administrator to set up your profile.')
-    } finally {
-      isHydrating.current = false
-    }
+    })()
+
+    hydratingPromise.current = hydrate.finally(() => {
+      hydratingPromise.current = null
+    })
+
+    return hydratingPromise.current
   }
 
   // ── Auth actions ──────────────────────────────────────────
