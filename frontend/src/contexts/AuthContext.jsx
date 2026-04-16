@@ -61,8 +61,10 @@ export function AuthProvider({ children }) {
           const { data: { session: currentSession } } = await supabase.auth.getSession()
           if (!currentSession) return false
           if (mounted) setSession(currentSession)
-          await hydrateUser(currentSession)
+          // Clear loading immediately so the app never hangs — hydrateUser
+          // fills in `user` shortly after (ProtectedRoute handles the interim).
           if (mounted) setLoading(false)
+          await hydrateUser(currentSession)
           return true
         } catch {
           if (attempt < retries) await sleep(delayMs)
@@ -134,11 +136,19 @@ export function AuthProvider({ children }) {
 
       // Always read the full profile from DB — this gives us full_name + role
       // regardless of whether app_metadata.role is already in the JWT.
-      const { data: profile } = await supabase
+      // Race with a 7 s timeout so a hanging Supabase query doesn't leave
+      // the app in an indefinite (session && !user) limbo state.
+      const profileQuery = supabase
         .from('users')
         .select('id, full_name, role')
         .eq('id', session.user.id)
         .single()
+
+      const timeoutGuard = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile query timed out')), 7_000)
+      )
+
+      const { data: profile } = await Promise.race([profileQuery, timeoutGuard])
 
       if (profile) {
         setUser(profile)

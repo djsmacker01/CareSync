@@ -83,11 +83,11 @@ async function main() {
   // ── Step 3: Seed clients ─────────────────────────────────────
   console.log('\nStep 3: Seeding clients...')
   const clients = [
-    { id: '10000000-0000-0000-0000-000000000001', full_name: 'George Adams',  date_of_birth: '1942-03-14', room_number: '1A', key_worker_id: userIds.staff },
-    { id: '10000000-0000-0000-0000-000000000002', full_name: 'Dorothy Brown', date_of_birth: '1938-07-22', room_number: '1B', key_worker_id: userIds.staff },
-    { id: '10000000-0000-0000-0000-000000000003', full_name: 'Harold Clarke', date_of_birth: '1945-11-05', room_number: '2A', key_worker_id: userIds.supervisor },
-    { id: '10000000-0000-0000-0000-000000000004', full_name: 'Edith Davis',   date_of_birth: '1950-01-30', room_number: '2B', key_worker_id: userIds.supervisor },
-    { id: '10000000-0000-0000-0000-000000000005', full_name: 'Frank Evans',   date_of_birth: '1935-09-18', room_number: '3A', key_worker_id: userIds.staff },
+    { id: '10000000-0000-0000-0000-000000000001', full_name: 'George Adams',  date_of_birth: '1942-03-14', room_number: '1', key_worker_id: userIds.staff },
+    { id: '10000000-0000-0000-0000-000000000002', full_name: 'Dorothy Brown', date_of_birth: '1938-07-22', room_number: '2', key_worker_id: userIds.staff },
+    { id: '10000000-0000-0000-0000-000000000003', full_name: 'Harold Clarke', date_of_birth: '1945-11-05', room_number: '3', key_worker_id: userIds.supervisor },
+    { id: '10000000-0000-0000-0000-000000000004', full_name: 'Edith Davis',   date_of_birth: '1950-01-30', room_number: '4', key_worker_id: userIds.supervisor },
+    { id: '10000000-0000-0000-0000-000000000005', full_name: 'Frank Evans',   date_of_birth: '1935-09-18', room_number: '5', key_worker_id: userIds.staff },
   ]
 
   const { error: clientsErr } = await supabase.from('clients').upsert(clients, { onConflict: 'id' })
