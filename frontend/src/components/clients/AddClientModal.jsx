@@ -24,6 +24,11 @@ export default function AddClientModal({ onSave, onClose, submitting }) {
       setError('Flat number is required.')
       return
     }
+    const flatNum = Number(form.room_number)
+    if (!Number.isInteger(flatNum) || flatNum < 1 || flatNum > 20) {
+      setError('Flat number must be a number from 1 to 20.')
+      return
+    }
     try {
       await onSave(form)
     } catch (err) {
@@ -66,10 +71,13 @@ export default function AddClientModal({ onSave, onClose, submitting }) {
               Flat Number <span className="text-red-500">*</span>
             </label>
             <input
-              type="text"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={20}
               value={form.room_number}
-              onChange={e => set('room_number', e.target.value)}
-              placeholder="e.g. Flat 1"
+              onChange={e => set('room_number', e.target.value.replace(/\D/g, ''))}
+              placeholder="e.g. 1"
               className="w-full min-h-[48px] rounded-xl border-2 border-gray-200 px-3 text-gray-900 text-sm focus:border-teal focus:outline-none"
             />
           </div>
