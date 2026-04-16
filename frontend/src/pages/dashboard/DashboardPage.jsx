@@ -348,7 +348,7 @@ export default function DashboardPage() {
           {/* ── Low stock detail ── */}
           {d.lowStock.length > 0 && (
             <Section
-              title={`⚠ Low Stock — ${d.lowStock.length} item${d.lowStock.length > 1 ? 's' : ''}`}
+              title={`Low Stock — ${d.lowStock.length} item${d.lowStock.length > 1 ? 's' : ''}`}
               action={
                 <button onClick={() => navigate('/stock')} className="text-xs font-bold text-teal hover:underline min-h-[44px] px-2">
                   Manage →
@@ -429,7 +429,11 @@ export default function DashboardPage() {
             className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-4"
             onClick={e => e.stopPropagation()}
           >
-            <div className="text-5xl">📄</div>
+            <div className="flex justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-teal/10 flex items-center justify-center">
+                <FileText className="w-8 h-8 text-teal" />
+              </div>
+            </div>
             <h2 className="text-xl font-black text-gray-900">PDF Reports</h2>
             <p className="text-sm text-gray-500 leading-relaxed">
               Automated PDF generation for{' '}

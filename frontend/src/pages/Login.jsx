@@ -3,13 +3,14 @@ import { useNavigate, useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { ROLE_HOME } from '../components/ProtectedRoute'
 import { supabase } from '../lib/supabase'
+import { Delete, CheckCircle2, Mail, ArrowLeft } from 'lucide-react'
 
 // ── PIN Keypad ─────────────────────────────────────────────
 function PinKeypad({ value, onChange, maxLength = 6 }) {
-  const digits = ['1','2','3','4','5','6','7','8','9','','0','⌫']
+  const digits = ['1','2','3','4','5','6','7','8','9','','0','del']
 
   function press(key) {
-    if (key === '⌫') {
+    if (key === 'del') {
       onChange(value.slice(0, -1))
     } else if (key !== '' && value.length < maxLength) {
       onChange(value + key)
@@ -41,15 +42,15 @@ function PinKeypad({ value, onChange, maxLength = 6 }) {
             onClick={() => key !== '' && press(key)}
             disabled={key === ''}
             className={`
-              min-h-[64px] rounded-2xl text-2xl font-bold transition-all active:scale-95
+              min-h-[64px] rounded-2xl text-2xl font-bold transition-all active:scale-95 flex items-center justify-center
               ${key === '' ? 'invisible' : ''}
-              ${key === '⌫'
+              ${key === 'del'
                 ? 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                 : 'bg-white text-navy border-2 border-gray-200 hover:border-teal hover:text-teal shadow-sm'
               }
             `}
           >
-            {key}
+            {key === 'del' ? <Delete className="w-5 h-5" /> : key}
           </button>
         ))}
       </div>
@@ -197,8 +198,9 @@ export default function Login() {
 
         {/* Success banner (after password reset) */}
         {successMsg && (
-          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-4 py-3 mb-4">
-            ✅ {successMsg}
+          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-4 py-3 mb-4 flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+            {successMsg}
           </div>
         )}
 
@@ -335,9 +337,9 @@ export default function Login() {
             <button
               type="button"
               onClick={() => { setMode('password'); setError(''); setResetSent(false) }}
-              className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 mb-5"
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 mb-5"
             >
-              ← Back to login
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to login
             </button>
 
             {resetSent ? (
