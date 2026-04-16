@@ -59,7 +59,7 @@ function PinKeypad({ value, onChange, maxLength = 6 }) {
 
 // ── Login Page ─────────────────────────────────────────────
 export default function Login() {
-  const { signInWithPassword, signInWithPin, user, loading: authLoading } = useAuth()
+  const { signInWithPassword, signInWithPin, user, session, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -145,7 +145,7 @@ export default function Login() {
 
   // While auth is restoring from storage, show a neutral loading screen so
   // the login form never briefly flashes for users who are already signed in.
-  if (authLoading) {
+  if (authLoading || (session && !user)) {
     return (
       <div className="min-h-screen bg-navy flex items-center justify-center">
         <div className="text-white/60 text-sm animate-pulse">Loading…</div>
