@@ -5,9 +5,22 @@
 
 import { test, expect } from '@playwright/test'
 
+const STAFF_EMAIL = process.env.TEST_STAFF_EMAIL || 'staff@caresync.test'
+const STAFF_PASS  = process.env.TEST_STAFF_PASSWORD || 'TestPass123!'
+
+async function ensureStaffSession(page) {
+  if (!/\/login/.test(page.url())) return
+  await page.getByPlaceholder('you@caresync.com').fill(STAFF_EMAIL)
+  await page.getByPlaceholder('••••••••').fill(STAFF_PASS)
+  await page.getByRole('button', { name: 'Sign in' }).click()
+  await page.waitForURL('**/mar', { timeout: 15_000 })
+}
+
 test.describe('Visitors page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/visitors')
+    await ensureStaffSession(page)
+    if (!/\/visitors/.test(page.url())) await page.goto('/visitors')
     await page.waitForLoadState('networkidle')
   })
 
@@ -42,7 +55,7 @@ test.describe('Visitors page', () => {
 
   test('shows active visitors section', async ({ page }) => {
     await expect(
-      page.getByText(/currently (signed in|visiting)|active visitor/i)
+      page.getByText(/currently signed in|currently (signed in|visiting)|active visitor/i)
         .or(page.getByRole('heading', { name: /active/i }))
     ).toBeVisible({ timeout: 10_000 })
   })

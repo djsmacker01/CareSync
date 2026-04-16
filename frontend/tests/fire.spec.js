@@ -5,9 +5,22 @@
 
 import { test, expect } from '@playwright/test'
 
+const STAFF_EMAIL = process.env.TEST_STAFF_EMAIL || 'staff@caresync.test'
+const STAFF_PASS  = process.env.TEST_STAFF_PASSWORD || 'TestPass123!'
+
+async function ensureStaffSession(page) {
+  if (!/\/login/.test(page.url())) return
+  await page.getByPlaceholder('you@caresync.com').fill(STAFF_EMAIL)
+  await page.getByPlaceholder('••••••••').fill(STAFF_PASS)
+  await page.getByRole('button', { name: 'Sign in' }).click()
+  await page.waitForURL('**/mar', { timeout: 15_000 })
+}
+
 test.describe('Fire Safety page', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/fire')
+    await ensureStaffSession(page)
+    if (!/\/fire/.test(page.url())) await page.goto('/fire')
     await page.waitForLoadState('networkidle')
   })
 

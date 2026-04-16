@@ -6,12 +6,15 @@ const AuthContext = createContext(null)
 const INACTIVITY_WARN_MS  = 25 * 60 * 1000   // 25 minutes
 const INACTIVITY_LIMIT_MS = 30 * 60 * 1000   // 30 minutes
 const ACTIVITY_EVENTS     = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll']
+const PIN_LOGIN_TIMEOUT_MS = 12_000
+const PIN_MAX_NETWORK_RETRIES = 1
 
 export function AuthProvider({ children }) {
   const [user, setUser]               = useState(null)   // { id, full_name, role }
   const [session, setSession]         = useState(null)
   const [loading, setLoading]         = useState(true)
   const [showTimeoutWarn, setShowTimeoutWarn] = useState(false)
+  const [warnDeadline, setWarnDeadline] = useState(null)
 
   const warnTimer      = useRef(null)
   const logoutTimer    = useRef(null)
@@ -27,8 +30,9 @@ export function AuthProvider({ children }) {
     if (!session) return
     clearTimers()
     setShowTimeoutWarn(false)
+    setWarnDeadline(null)
     warnTimer.current   = setTimeout(() => setShowTimeoutWarn(true), INACTIVITY_WARN_MS)
-    logoutTimer.current = setTimeout(() => signOut(), INACTIVITY_LIMIT_MS)
+    logoutTimer.current = setTimeout(() => signOut({ reason: 'inactivity-timeout' }), INACTIVITY_LIMIT_MS)
   }, [session, clearTimers]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Attach activity listeners when session is active
@@ -48,12 +52,32 @@ export function AuthProvider({ children }) {
   // causes concurrent lock contention on the Supabase navigator lock.
   useEffect(() => {
     let mounted = true
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+    async function tryRestoreSession({ retries = 2, delayMs = 400 } = {}) {
+      for (let attempt = 0; attempt <= retries; attempt += 1) {
+        if (!mounted) return false
+        try {
+          const { data: { session: currentSession } } = await supabase.auth.getSession()
+          if (!currentSession) return false
+          if (mounted) setSession(currentSession)
+          await hydrateUser(currentSession)
+          if (mounted) setLoading(false)
+          return true
+        } catch {
+          if (attempt < retries) await sleep(delayMs)
+        }
+      }
+      return false
+    }
 
     // Safety valve: if Supabase doesn't fire onAuthStateChange within 8 s
     // (e.g. stale refresh token, no network), clear the loading gate so the
     // app never hangs on the "Loading…" screen.
-    const safetyTimer = setTimeout(() => {
-      if (mounted) setLoading(false)
+    const safetyTimer = setTimeout(async () => {
+      if (!mounted) return
+      const restored = await tryRestoreSession({ retries: 3, delayMs: 500 })
+      if (!restored && mounted) setLoading(false)
     }, 8_000)
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
@@ -69,7 +93,7 @@ export function AuthProvider({ children }) {
           if (mounted) { setUser(null); setSession(null) }
         }
       } else {
-        if (mounted) { setUser(null); setSession(null) }
+        if (mounted) { setUser(null); setSession(null); setShowTimeoutWarn(false); setWarnDeadline(null) }
       }
 
       clearTimeout(safetyTimer)
@@ -80,15 +104,7 @@ export function AuthProvider({ children }) {
     // Querying once avoids getting stuck in a signed-out-looking state.
     const sessionFallbackTimer = setTimeout(async () => {
       if (!mounted) return
-      try {
-        const { data: { session: currentSession } } = await supabase.auth.getSession()
-        if (!mounted || !currentSession) return
-        if (mounted) setSession(currentSession)
-        await hydrateUser(currentSession)
-        if (mounted) setLoading(false)
-      } catch {
-        // Non-critical: safetyTimer still clears loading state
-      }
+      await tryRestoreSession({ retries: 2, delayMs: 350 })
     }, 1200)
 
     return () => {
@@ -162,14 +178,39 @@ export function AuthProvider({ children }) {
   }
 
   async function signInWithPin(email, pin) {
-    // Call backend — backend verifies PIN hash and creates session via admin API
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'}/api/auth/pin-login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, pin }),
-    })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error || 'PIN login failed')
+    // Call backend with timeout + one network retry for slow/unstable links
+    let data = null
+    let lastError = null
+
+    for (let attempt = 0; attempt <= PIN_MAX_NETWORK_RETRIES; attempt += 1) {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), PIN_LOGIN_TIMEOUT_MS)
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'}/api/auth/pin-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, pin }),
+          signal: controller.signal,
+        })
+        data = await res.json().catch(() => ({}))
+        if (!res.ok) throw new Error(data.error || 'PIN login failed')
+        clearTimeout(timeoutId)
+        lastError = null
+        break
+      } catch (err) {
+        clearTimeout(timeoutId)
+        lastError = err
+        const aborted = err?.name === 'AbortError'
+        const networkish = aborted || /Failed to fetch|NetworkError|Load failed/i.test(err?.message || '')
+        if (!networkish || attempt >= PIN_MAX_NETWORK_RETRIES) {
+          if (aborted) throw new Error('PIN login timed out. Please check connection and try again.')
+          throw err
+        }
+        await new Promise(resolve => setTimeout(resolve, 600))
+      }
+    }
+
+    if (lastError) throw lastError
 
     // Inject the session Supabase-side so the client is aware
     const { error } = await supabase.auth.setSession({
@@ -181,19 +222,30 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  async function signOut() {
+  async function signOut({ reason } = {}) {
+    if (reason === 'inactivity-timeout' || reason === 'inactivity-warning') {
+      window.dispatchEvent(new CustomEvent('caresync:autosave-requested', { detail: { reason } }))
+    }
     clearTimers()
     setShowTimeoutWarn(false)
+    setWarnDeadline(null)
     await supabase.auth.signOut()
     setUser(null)
     setSession(null)
   }
+
+  useEffect(() => {
+    if (!showTimeoutWarn) return
+    setWarnDeadline(Date.now() + (INACTIVITY_LIMIT_MS - INACTIVITY_WARN_MS))
+    window.dispatchEvent(new CustomEvent('caresync:autosave-requested', { detail: { reason: 'inactivity-warning' } }))
+  }, [showTimeoutWarn])
 
   const value = {
     user,
     session,
     loading,
     showTimeoutWarn,
+    warnDeadline,
     signInWithPassword,
     signInWithPin,
     signOut,

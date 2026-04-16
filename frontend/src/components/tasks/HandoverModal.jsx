@@ -7,17 +7,43 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
   const [saveError, setSaveErr] = useState(null)
   const [notes, setNotes]       = useState('')
   const [saved, setSaved]       = useState(false)
+  const draftKey = `caresync:handover-draft:${userId}:${shift}`
 
   useEffect(() => {
+    const savedDraft = localStorage.getItem(draftKey)
+    if (savedDraft) setNotes(savedDraft)
     fetchHandoverData(shift)
       .then(d => {
         setHD(d)
-        if (d.existing?.content) setNotes(d.existing.content)
-        else setNotes(buildAutoContent(d))
+        if (!savedDraft) {
+          if (d.existing?.content) setNotes(d.existing.content)
+          else setNotes(buildAutoContent(d))
+        }
       })
       .catch(err => setLoadErr(err.message || 'Failed to load handover data.'))
       .finally(() => setLoading(false))
-  }, [shift, fetchHandoverData])
+  }, [shift, fetchHandoverData, draftKey])
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      if (!notes.trim()) return
+      localStorage.setItem(draftKey, notes)
+    }, 400)
+    return () => clearTimeout(id)
+  }, [notes, draftKey])
+
+  useEffect(() => {
+    const persistOnRequest = () => {
+      if (notes.trim()) localStorage.setItem(draftKey, notes)
+    }
+    const persistOnUnload = () => persistOnRequest()
+    window.addEventListener('caresync:autosave-requested', persistOnRequest)
+    window.addEventListener('beforeunload', persistOnUnload)
+    return () => {
+      window.removeEventListener('caresync:autosave-requested', persistOnRequest)
+      window.removeEventListener('beforeunload', persistOnUnload)
+    }
+  }, [notes, draftKey])
 
   function buildAutoContent(d) {
     const lines = []
@@ -50,6 +76,7 @@ export default function HandoverModal({ shift, fetchHandoverData, onSave, onClos
     setSaveErr(null)
     try {
       await onSave({ shift, content: notes, flags: buildFlags(handoverData), userId })
+      localStorage.removeItem(draftKey)
       setSaved(true)
     } catch (err) {
       setSaveErr(err.message || 'Failed to save handover note.')

@@ -69,6 +69,7 @@ export default function Login() {
   const [pin, setPin]               = useState('')
   const [error, setError]           = useState('')
   const [loading, setLoading]       = useState(false)
+  const [slowPinNetwork, setSlowPinNetwork] = useState(false)
   const [resetSent, setResetSent]   = useState(false)
   const [successMsg, setSuccessMsg] = useState(
     searchParams.get('passwordReset') === 'true'
@@ -81,6 +82,23 @@ export default function Login() {
   useEffect(() => {
     if (!authLoading && user) navigate(ROLE_HOME[user.role] || '/mar', { replace: true })
   }, [user, authLoading, navigate])
+
+  // Defensive fallback: if auth context is briefly out of sync after a hard
+  // reload but Supabase still has a valid session, send the user into the app.
+  useEffect(() => {
+    let active = true
+    if (authLoading || user) return () => { active = false }
+    ;(async () => {
+      try {
+        const { data: { session: restoredSession } } = await supabase.auth.getSession()
+        if (!active || !restoredSession) return
+        navigate('/mar', { replace: true })
+      } catch {
+        // ignore: normal login form remains available
+      }
+    })()
+    return () => { active = false }
+  }, [authLoading, user, navigate])
 
   async function handlePasswordSubmit(e) {
     e.preventDefault()
@@ -101,7 +119,9 @@ export default function Login() {
     e.preventDefault()
     if (pin.length < 6) { setError('Please enter your full 6-digit PIN.'); return }
     setError('')
+    setSlowPinNetwork(false)
     setLoading(true)
+    const slowTimer = setTimeout(() => setSlowPinNetwork(true), 4000)
     try {
       await signInWithPin(email.trim(), pin)
       // Navigation handled by the "already logged in" guard once user state is set
@@ -109,6 +129,7 @@ export default function Login() {
       setPin('')
       setError(err.message || 'PIN login failed.')
     } finally {
+      clearTimeout(slowTimer)
       setLoading(false)
     }
   }
@@ -291,6 +312,12 @@ export default function Login() {
               </label>
               <PinKeypad value={pin} onChange={handlePinChange} />
             </div>
+
+            {loading && slowPinNetwork && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-xl px-3 py-2 text-center">
+                Connection is slow. Keeping your PIN attempt active…
+              </div>
+            )}
 
             <button
               id="pin-submit-btn"
