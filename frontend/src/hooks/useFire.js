@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
+import { DoorOpen, ShieldCheck, Bell, PersonStanding } from 'lucide-react'
 
 export const CHECK_TYPES = ['fire_door', 'extinguisher', 'alarm_test', 'evacuation_drill']
 
 export const CHECK_META = {
-  fire_door:        { label: 'Fire Door Check',   icon: '🚪', intervalDays: 7  },
-  extinguisher:     { label: 'Extinguisher Check', icon: '🧯', intervalDays: 30 },
-  alarm_test:       { label: 'Alarm Test',         icon: '🔔', intervalDays: 7  },
-  evacuation_drill: { label: 'Evacuation Drill',   icon: '🏃', intervalDays: 90 },
+  fire_door:        { label: 'Fire Door Check',    Icon: DoorOpen,        intervalDays: 7  },
+  extinguisher:     { label: 'Extinguisher Check', Icon: ShieldCheck,     intervalDays: 30 },
+  alarm_test:       { label: 'Alarm Test',         Icon: Bell,            intervalDays: 7  },
+  evacuation_drill: { label: 'Evacuation Drill',   Icon: PersonStanding,  intervalDays: 90 },
 }
 
 export function useFire() {

@@ -1,3 +1,5 @@
+import { CheckCircle2, AlertTriangle, XCircle, Clock, Circle } from 'lucide-react'
+
 export default function ClientCard({ client, onClick }) {
   const { full_name, room_number, total, given, refused, pending } = client
 
@@ -11,6 +13,20 @@ export default function ClientCard({ client, onClick }) {
     refused > 0              ? 'border-refused/20'              :
                                'border-gray-200 bg-white'
 
+  // Status icon
+  let StatusIcon, statusColor
+  if (allDone && refused === 0) {
+    StatusIcon = CheckCircle2; statusColor = 'text-given'
+  } else if (allDone && refused > 0) {
+    StatusIcon = AlertTriangle; statusColor = 'text-pending'
+  } else if (refused > 0) {
+    StatusIcon = XCircle; statusColor = 'text-refused'
+  } else if (given > 0) {
+    StatusIcon = Clock; statusColor = 'text-pending'
+  } else {
+    StatusIcon = Circle; statusColor = 'text-gray-300'
+  }
+
   return (
     <button
       onClick={onClick}
@@ -21,14 +37,7 @@ export default function ClientCard({ client, onClick }) {
           <div className="font-bold text-gray-900 text-base">{full_name}</div>
           <div className="text-xs text-gray-400 mt-0.5">Flat {String(room_number || '').replace(/\D/g, '')}</div>
         </div>
-
-        {/* Status icon */}
-        <div className="text-2xl">
-          {allDone && refused === 0 ? '✅' :
-           allDone && refused > 0  ? '⚠️' :
-           refused > 0             ? '🔴' :
-           given > 0               ? '🟡' : '⭕'}
-        </div>
+        <StatusIcon className={`w-7 h-7 ${statusColor}`} />
       </div>
 
       {/* Progress bar */}

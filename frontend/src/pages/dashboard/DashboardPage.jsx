@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { useDashboard } from '../../hooks/useDashboard'
 import { useRealtime } from '../../hooks/useRealtime'
 import LiveBadge from '../../components/LiveBadge'
+import {
+  Pill, Package, Flame, UserCheck, CheckCircle2, ClipboardList,
+  Sun, Moon, RefreshCw, AlertTriangle, FileText,
+} from 'lucide-react'
 
 // Stable subscription list — defined outside the component so the reference
 // never changes between renders and the WebSocket is only opened once.
@@ -32,7 +36,7 @@ function formatDate(isoStr) {
 }
 
 // ── Stat card ────────────────────────────────────────────────────
-function StatCard({ icon, label, value, sub, status, onClick }) {
+function StatCard({ Icon, label, value, sub, status, onClick }) {
   const colors = {
     ok:   'border-green-200  bg-green-50',
     warn: 'border-amber-200  bg-amber-50',
@@ -45,13 +49,21 @@ function StatCard({ icon, label, value, sub, status, onClick }) {
     alert:'text-red-700',
     info: 'text-gray-900',
   }
+  const iconColors = {
+    ok:   'text-green-500  bg-green-100',
+    warn: 'text-amber-500  bg-amber-100',
+    alert:'text-red-500    bg-red-100',
+    info: 'text-gray-400   bg-gray-100',
+  }
   return (
     <button
       onClick={onClick}
       className={`text-left w-full rounded-2xl border-2 p-4 space-y-2 transition-all hover:scale-[1.01] active:scale-[0.99] ${colors[status] || colors.info}`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-2xl">{icon}</span>
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconColors[status] || iconColors.info}`}>
+          <Icon className="w-5 h-5" />
+        </div>
         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{label}</span>
       </div>
       <div className={`text-3xl font-black tabular-nums ${textColors[status] || textColors.info}`}>
@@ -134,9 +146,10 @@ export default function DashboardPage() {
         <button
           onClick={fetchSummary}
           disabled={loading}
-          className="min-h-[44px] px-4 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-colors disabled:opacity-40 flex-shrink-0"
+          className="min-h-[44px] px-4 rounded-xl border-2 border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-colors disabled:opacity-40 flex-shrink-0 flex items-center gap-2"
         >
-          {loading ? '↻ Loading…' : '↻ Refresh'}
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          {loading ? 'Loading…' : 'Refresh'}
         </button>
       </div>
 
@@ -168,7 +181,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {/* MAR */}
             <StatCard
-              icon="💊"
+              Icon={Pill}
               label="Today's MAR"
               value={d.mar.expected > 0 ? `${pct(d.mar.given, d.mar.expected)}%` : '—'}
               sub={`${d.mar.given} given · ${d.mar.refused} refused · ${d.mar.missed} missed`}
