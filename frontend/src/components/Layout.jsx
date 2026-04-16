@@ -4,6 +4,10 @@ import { useAuth } from '../contexts/AuthContext'
 import { useOfflineSync } from '../hooks/useOfflineSync'
 import TimeoutWarning from './TimeoutWarning'
 import SyncBanner from './SyncBanner'
+import {
+  Pill, Package, ClipboardCheck, Flame, UserCheck,
+  Lock, Home, LayoutDashboard, Users, LogOut, Menu, X,
+} from 'lucide-react'
 
 // ── Live clock ──────────────────────────────────────────────────────────────
 function getShift(h) {
@@ -93,15 +97,15 @@ const NAV_ITEMS = [
 ]
 
 const NAV_ICONS = {
-  '/mar':       '💊',
-  '/stock':     '📦',
-  '/tasks':     '✅',
-  '/fire':      '🔥',
-  '/visitors':  '👤',
-  '/cd':        '🔐',
-  '/clients':   '🏠',
-  '/dashboard': '📊',
-  '/staff':     '👥',
+  '/mar':       Pill,
+  '/stock':     Package,
+  '/tasks':     ClipboardCheck,
+  '/fire':      Flame,
+  '/visitors':  UserCheck,
+  '/cd':        Lock,
+  '/clients':   Home,
+  '/dashboard': LayoutDashboard,
+  '/staff':     Users,
 }
 
 const ROLE_BADGE = {
@@ -145,11 +149,7 @@ export default function Layout({ children }) {
             className="sm:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-white/10 active:bg-white/20 transition-colors"
             aria-label="Open navigation"
           >
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <line x1="3" y1="5.5" x2="19" y2="5.5"/>
-              <line x1="3" y1="11" x2="19" y2="11"/>
-              <line x1="3" y1="16.5" x2="19" y2="16.5"/>
-            </svg>
+            <Menu className="w-5 h-5" />
           </button>
           <span className="font-bold text-lg tracking-tight text-teal2">CareSync</span>
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badge.color}`}>
@@ -161,9 +161,10 @@ export default function Layout({ children }) {
           <span className="text-sm text-gray-300 hidden sm:block truncate max-w-[160px]">{user?.full_name}</span>
           <button
             onClick={handleLogout}
-            className="min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 text-sm font-semibold transition-colors"
+            className="min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-lg bg-white/10 hover:bg-white/20 active:bg-white/30 text-sm font-semibold transition-colors flex items-center gap-2"
           >
-            Log out
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Log out</span>
           </button>
         </div>
       </header>
@@ -209,10 +210,7 @@ export default function Layout({ children }) {
                 className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/60 hover:text-white active:text-white/40 transition-colors ml-2"
                 aria-label="Close menu"
               >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                  <line x1="2" y1="2" x2="16" y2="16"/>
-                  <line x1="16" y1="2" x2="2" y2="16"/>
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -238,7 +236,7 @@ export default function Layout({ children }) {
                     }`
                   }
                 >
-                  <span className="text-lg w-6 text-center shrink-0">{NAV_ICONS[item.to]}</span>
+                  {(() => { const Icon = NAV_ICONS[item.to]; return Icon ? <Icon className="w-5 h-5 shrink-0" /> : null })()}
                   {item.label}
                 </NavLink>
               ))}
@@ -248,8 +246,9 @@ export default function Layout({ children }) {
             <div className="px-5 py-4 border-t border-white/10">
               <button
                 onClick={() => { setDrawerOpen(false); handleLogout() }}
-                className="w-full min-h-[48px] rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold text-sm transition-colors"
+                className="w-full min-h-[48px] rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
               >
+                <LogOut className="w-4 h-4" />
                 Log out
               </button>
             </div>

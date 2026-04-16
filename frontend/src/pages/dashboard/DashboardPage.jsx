@@ -75,13 +75,16 @@ function StatCard({ Icon, label, value, sub, status, onClick }) {
 }
 
 // ── Progress bar row ─────────────────────────────────────────────
-function ShiftBar({ label, done, total }) {
+function ShiftBar({ label, LabelIcon, done, total }) {
   const p = pct(done, total)
   const color = p === 100 ? 'bg-green-500' : p >= 60 ? 'bg-teal' : 'bg-amber-400'
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-sm">
-        <span className="font-bold text-gray-700">{label}</span>
+        <span className="font-bold text-gray-700 flex items-center gap-1.5">
+          {LabelIcon && <LabelIcon className="w-4 h-4 text-gray-400" />}
+          {label}
+        </span>
         <span className={`font-bold tabular-nums ${p === 100 ? 'text-green-600' : 'text-gray-600'}`}>
           {done}/{total} <span className="text-gray-400 font-normal">({p}%)</span>
         </span>
@@ -261,7 +264,7 @@ export default function DashboardPage() {
             >
               {d.refusals.length === 0 ? (
                 <div className="text-center py-6">
-                  <div className="text-2xl mb-1">✅</div>
+                  <CheckCircle2 className="w-8 h-8 text-green-400 mx-auto mb-1" />
                   <p className="text-sm text-gray-400">No refusals in the last 7 days</p>
                 </div>
               ) : (
@@ -299,7 +302,7 @@ export default function DashboardPage() {
             >
               {d.handoverNotes.length === 0 ? (
                 <div className="text-center py-6">
-                  <div className="text-2xl mb-1">📋</div>
+                  <ClipboardList className="w-8 h-8 text-gray-300 mx-auto mb-1" />
                   <p className="text-sm text-gray-400">No handover notes yet today</p>
                 </div>
               ) : (
@@ -310,8 +313,9 @@ export default function DashboardPage() {
                     return (
                       <div key={shift} className="bg-blue-50 rounded-xl px-3 py-2 space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-blue-700">
-                            {shift === 'AM' ? '☀️ Morning' : '🌙 Afternoon'} shift
+                          <span className="text-xs font-bold text-blue-700 flex items-center gap-1">
+                            {shift === 'AM' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                            {shift === 'AM' ? 'Morning' : 'Afternoon'} shift
                           </span>
                           <span className="text-xs text-gray-400">
                             {note.users?.full_name || 'Staff'}

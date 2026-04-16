@@ -10,6 +10,7 @@
  */
 
 import { useState } from 'react'
+import { WifiOff, RefreshCw, Clock, Check, AlertTriangle, ChevronUp, ChevronDown } from 'lucide-react'
 
 export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErrors }) {
   const [expanded, setExpanded] = useState(false)
@@ -21,7 +22,7 @@ export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErr
   if (!isOnline) {
     return (
       <div className="bg-red-600 text-white text-xs font-bold px-4 py-2 flex items-center justify-center gap-2 text-center">
-        <span>📵</span>
+        <WifiOff className="w-3.5 h-3.5 shrink-0" />
         {pendingCount > 0
           ? `Offline · ${pendingCount} ${pendingCount === 1 ? 'change' : 'changes'} will sync when reconnected`
           : 'No internet connection · Read-only mode'}
@@ -33,7 +34,7 @@ export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErr
   if (syncStatus === 'syncing') {
     return (
       <div className="bg-amber-500 text-white text-xs font-bold px-4 py-2 flex items-center justify-center gap-2">
-        <span className="animate-spin inline-block">⟳</span>
+        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
         Syncing {pendingCount} {pendingCount === 1 ? 'change' : 'changes'}…
       </div>
     )
@@ -43,7 +44,7 @@ export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErr
   if (isOnline && pendingCount > 0 && syncStatus === 'idle') {
     return (
       <div className="bg-amber-100 border-b border-amber-200 text-amber-800 text-xs font-bold px-4 py-2 flex items-center justify-center gap-2">
-        <span>⏳</span>
+        <Clock className="w-3.5 h-3.5" />
         {pendingCount} {pendingCount === 1 ? 'change' : 'changes'} pending sync
       </div>
     )
@@ -53,7 +54,7 @@ export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErr
   if (syncStatus === 'done') {
     return (
       <div className="bg-green-600 text-white text-xs font-bold px-4 py-2 flex items-center justify-center gap-2">
-        <span>✓</span>
+        <Check className="w-3.5 h-3.5" />
         All changes synced
       </div>
     )
@@ -67,9 +68,9 @@ export default function SyncBanner({ isOnline, pendingCount, syncStatus, syncErr
           className="w-full flex items-center justify-center gap-2"
           onClick={() => setExpanded(v => !v)}
         >
-          <span>⚠️</span>
+          <AlertTriangle className="w-3.5 h-3.5" />
           {syncErrors.length} {syncErrors.length === 1 ? 'change' : 'changes'} failed to sync
-          <span className="ml-1">{expanded ? '▲' : '▼'}</span>
+          {expanded ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
         </button>
         {expanded && (
           <div className="mt-2 space-y-1 font-normal">
