@@ -6,7 +6,7 @@ import TimeoutWarning from './TimeoutWarning'
 import SyncBanner from './SyncBanner'
 import {
   Pill, Package, ClipboardCheck, Flame, UserCheck,
-  Lock, Home, LayoutDashboard, Users, LogOut, Menu, X,
+  Lock, Home, LayoutDashboard, Users, LogOut, Menu, X, MapPin, BookOpen,
 } from 'lucide-react'
 
 // ── Live clock ──────────────────────────────────────────────────────────────
@@ -85,27 +85,31 @@ function MobileDrawerClock() {
 }
 
 const NAV_ITEMS = [
-  { to: '/mar',       label: 'MAR',           roles: ['staff', 'supervisor', 'manager', 'readonly'] },
-  { to: '/stock',     label: 'Stock',          roles: ['staff', 'supervisor', 'manager'] },
-  { to: '/tasks',     label: 'Tasks',          roles: ['staff', 'supervisor', 'manager'] },
-  { to: '/fire',      label: 'Fire Safety',    roles: ['staff', 'supervisor', 'manager', 'readonly'] },
-  { to: '/visitors',  label: 'Visitors',       roles: ['staff', 'supervisor', 'manager', 'readonly'] },
-  { to: '/cd',        label: 'CD Register',    roles: ['staff', 'supervisor', 'manager'] },
-  { to: '/clients',   label: 'Service Users',  roles: ['staff', 'supervisor', 'manager'] },
-  { to: '/dashboard', label: 'Dashboard',      roles: ['manager'] },
-  { to: '/staff',     label: 'Staff',          roles: ['manager'] },
+  { to: '/mar',          label: 'MAR',           roles: ['staff', 'supervisor', 'manager', 'readonly'] },
+  { to: '/stock',        label: 'Stock',          roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/tasks',        label: 'Tasks',          roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/fire',         label: 'Fire Safety',    roles: ['staff', 'supervisor', 'manager', 'readonly'] },
+  { to: '/visitors',     label: 'Visitors',       roles: ['staff', 'supervisor', 'manager', 'readonly'] },
+  { to: '/staff-visits', label: 'Staff Visits',   roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/activity',     label: 'Activity Logs',  roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/cd',           label: 'CD Register',    roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/clients',      label: 'Service Users',  roles: ['staff', 'supervisor', 'manager'] },
+  { to: '/dashboard',    label: 'Dashboard',      roles: ['manager'] },
+  { to: '/staff',        label: 'Staff',          roles: ['manager'] },
 ]
 
 const NAV_ICONS = {
-  '/mar':       Pill,
-  '/stock':     Package,
-  '/tasks':     ClipboardCheck,
-  '/fire':      Flame,
-  '/visitors':  UserCheck,
-  '/cd':        Lock,
-  '/clients':   Home,
-  '/dashboard': LayoutDashboard,
-  '/staff':     Users,
+  '/mar':          Pill,
+  '/stock':        Package,
+  '/tasks':        ClipboardCheck,
+  '/fire':         Flame,
+  '/visitors':     UserCheck,
+  '/staff-visits': MapPin,
+  '/activity':     BookOpen,
+  '/cd':           Lock,
+  '/clients':      Home,
+  '/dashboard':    LayoutDashboard,
+  '/staff':        Users,
 }
 
 const ROLE_BADGE = {

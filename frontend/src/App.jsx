@@ -14,6 +14,8 @@ import ClientsPage from './pages/clients/ClientsPage'
 import ClientProfilePage from './pages/clients/ClientProfilePage'
 import StaffPage from './pages/staff/StaffPage'
 import CDPage from './pages/cd/CDPage'
+import StaffVisitsPage from './pages/visits/StaffVisitsPage'
+import ActivityPage from './pages/activity/ActivityPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 
 // ── PWA update banner ───────────────────────────────────────────────────────
@@ -103,6 +105,20 @@ export default function App() {
           <Route path="/clients/:id" element={
             <ProtectedLayout roles={['staff', 'supervisor', 'manager']}>
               <ClientProfilePage />
+            </ProtectedLayout>
+          } />
+
+          {/* Staff Visits — Lone Worker */}
+          <Route path="/staff-visits" element={
+            <ProtectedLayout roles={['staff', 'supervisor', 'manager']}>
+              <StaffVisitsPage />
+            </ProtectedLayout>
+          } />
+
+          {/* Activity Logs */}
+          <Route path="/activity" element={
+            <ProtectedLayout roles={['staff', 'supervisor', 'manager']}>
+              <ActivityPage />
             </ProtectedLayout>
           } />
 
