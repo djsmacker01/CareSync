@@ -78,8 +78,9 @@ router.get('/today', async (req, res, next) => {
           }
         })
 
+      const ADMINISTERED = ['given', 'prompted', 'self_administered', 'assisted']
       const total    = meds.length
-      const given    = meds.filter(m => m.status === 'given').length
+      const given    = meds.filter(m => ADMINISTERED.includes(m.status)).length
       const refused  = meds.filter(m => m.status === 'refused').length
       const pending  = meds.filter(m => m.status === 'pending').length
 
@@ -104,7 +105,8 @@ router.post('/entry', requireRole('staff', 'supervisor', 'manager'), async (req,
       return res.status(400).json({ error: 'client_id, medication_id, shift, and status are required.' })
     }
 
-    if (!['given', 'refused', 'missed', 'not_required'].includes(status)) {
+    const VALID_STATUSES = ['given', 'prompted', 'self_administered', 'assisted', 'refused', 'missed', 'not_required']
+    if (!VALID_STATUSES.includes(status)) {
       return res.status(400).json({ error: 'Invalid status.' })
     }
 
