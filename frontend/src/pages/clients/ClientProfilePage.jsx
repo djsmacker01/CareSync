@@ -4,6 +4,9 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useClients } from '../../hooks/useClients'
 import AddMedicationModal from '../../components/clients/AddMedicationModal'
 import EditClientModal from '../../components/clients/EditClientModal'
+import SupportPlan from '../../components/clients/SupportPlan'
+import CapacityConsent from '../../components/clients/CapacityConsent'
+import GoalTracker from '../../components/clients/GoalTracker'
 
 const ROUTE_ICONS = {
   oral:      '💊',
@@ -43,7 +46,7 @@ function StockPill({ qty, threshold, unit }) {
 export default function ClientProfilePage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const { fetchClient, addMedication, discontinueMedication, updateClient } = useClients()
 
   const [client,     setClient]    = useState(null)
@@ -53,9 +56,11 @@ export default function ClientProfilePage() {
   const [showEdit,   setShowEdit]  = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [toast,      setToast]     = useState(null)
-  const [confirmDisc, setConfirmDisc] = useState(null) // medicationId to confirm discontinue
+  const [confirmDisc, setConfirmDisc] = useState(null)
+  const [tab, setTab]              = useState('medications')
 
   const canManage = ['manager', 'supervisor'].includes(user?.role)
+  const token = session?.access_token || null
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -211,8 +216,43 @@ export default function ClientProfilePage() {
         )}
       </div>
 
-      {/* ── Active medications ───────────────────────────────────── */}
-      <div className="space-y-3">
+      {/* ── Tabs ──────────────────────────────────────────────────── */}
+      <div className="flex rounded-xl bg-gray-100 p-1 gap-0.5">
+        {[
+          { id: 'medications',  label: '💊 Meds' },
+          { id: 'support_plan', label: '📋 Plan' },
+          { id: 'capacity',     label: '⚖️ Capacity' },
+          { id: 'goals',        label: '🎯 Goals' },
+        ].map(t => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`flex-1 min-h-[40px] rounded-lg text-xs sm:text-sm font-bold transition-all ${
+              tab === t.id ? 'bg-white text-navy shadow' : 'text-gray-400 hover:text-gray-600'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Support Plan tab ───────────────────────────────────────── */}
+      {tab === 'support_plan' && (
+        <SupportPlan clientId={id} token={token} canEdit={canManage} />
+      )}
+
+      {/* ── Capacity & Consent tab ─────────────────────────────────── */}
+      {tab === 'capacity' && (
+        <CapacityConsent clientId={id} token={token} canEdit={canManage} />
+      )}
+
+      {/* ── Goals tab ─────────────────────────────────────────────── */}
+      {tab === 'goals' && (
+        <GoalTracker clientId={id} token={token} canManage={canManage} />
+      )}
+
+      {/* ── Medications tab ──────────────────────────────────────── */}
+      {tab === 'medications' && (<><div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-3">
           <h2 className="text-lg font-black text-gray-900">
             Current Medications
@@ -323,6 +363,7 @@ export default function ClientProfilePage() {
           ))}
         </div>
       )}
+      </>)}
 
       {/* Add medication modal */}
       {showAddMed && (

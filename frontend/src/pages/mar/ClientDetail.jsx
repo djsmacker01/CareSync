@@ -7,7 +7,7 @@ import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 
 export default function ClientDetail({ client, shift, onBack, onEntry, readonly }) {
   const { user } = useAuth()
-  const [refusalTarget, setRefusalTarget] = useState(null)   // medication being refused
+  const [refusalTarget, setRefusalTarget] = useState(null)
   const [submitting, setSubmitting]        = useState(false)
   const [toast, setToast]                  = useState(null)
 
@@ -16,17 +16,17 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
     setTimeout(() => setToast(null), 2500)
   }
 
-  async function handleGiven(medication) {
+  async function recordStatus(medication, status, extra = {}) {
     setSubmitting(true)
     try {
-      await onEntry({
-        client_id:      client.id,
-        medication_id:  medication.id,
-        shift,
-        status:         'given',
-        administered_by: user.id,
-      })
-      showToast(`${medication.medication_name} marked as given`)
+      await onEntry({ client_id: client.id, medication_id: medication.id, shift, status, administered_by: user.id, ...extra })
+      const labels = {
+        given: 'marked as given', prompted: 'recorded as prompted',
+        self_administered: 'recorded as self-administered', assisted: 'recorded as assisted',
+        missed: 'marked as missed',
+      }
+      const isWarn = ['missed'].includes(status)
+      showToast(`${medication.medication_name} ${labels[status] || status}`, isWarn ? 'warn' : 'success')
     } catch (err) {
       showToast(err.message, 'error')
     } finally {
@@ -34,32 +34,20 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
     }
   }
 
-  async function handleMissed(medication) {
-    setSubmitting(true)
-    try {
-      await onEntry({
-        client_id:      client.id,
-        medication_id:  medication.id,
-        shift,
-        status:         'missed',
-        administered_by: user.id,
-      })
-      showToast(`${medication.medication_name} marked as missed`, 'warn')
-    } catch (err) {
-      showToast(err.message, 'error')
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  const handleGiven     = med => recordStatus(med, 'given')
+  const handlePrompted  = med => recordStatus(med, 'prompted')
+  const handleSelfAdmin = med => recordStatus(med, 'self_administered')
+  const handleAssisted  = med => recordStatus(med, 'assisted')
+  const handleMissed    = med => recordStatus(med, 'missed')
 
   async function handleRefusalConfirm({ refusal_reason, notes }) {
     setSubmitting(true)
     try {
       await onEntry({
-        client_id:      client.id,
-        medication_id:  refusalTarget.id,
+        client_id:       client.id,
+        medication_id:   refusalTarget.id,
         shift,
-        status:         'refused',
+        status:          'refused',
         refusal_reason,
         notes,
         administered_by: user.id,
@@ -118,6 +106,9 @@ export default function ClientDetail({ client, shift, onBack, onEntry, readonly 
               key={med.id}
               medication={med}
               onGiven={handleGiven}
+              onPrompted={handlePrompted}
+              onSelfAdmin={handleSelfAdmin}
+              onAssisted={handleAssisted}
               onRefused={setRefusalTarget}
               onMissed={handleMissed}
               readonly={readonly}
