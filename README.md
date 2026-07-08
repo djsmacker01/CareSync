@@ -1,8 +1,20 @@
 # CareSync
 
-A digital management system for UK residential care homes. One app that replaces the paper MAR charts, stock sheets, task boards, fire safety logs and visitor books that care staff juggle every single shift.
+An **open-source care management system for small UK residential care homes**. One app that replaces the paper MAR charts, stock sheets, task boards, fire safety logs and visitor books that care staff juggle every single shift.
 
 I built this after seeing how much time care workers lose to paperwork — and how easy it is for a medication signature to get missed on a paper chart at 9pm when you're covering two floors. CareSync moves all of that onto a tablet, with a proper audit trail behind everything.
+
+## Why open source?
+
+When I looked around, every digital care platform in the UK was a closed commercial product, and the free tiers all keep medication management behind a paywall. Search for open-source care software and you'll find hospital EMRs — nothing built for a 20-bed residential home, CQC workflows, or an actual MAR chart. That's the gap this project sits in.
+
+Open source also means something concrete for a care home:
+
+- **You own your data.** Self-host it and your residents' records live in your Supabase project, not a vendor's — and you're not locked into anyone's pricing.
+- **Everything in one place.** Commercial platforms sell fire safety logs and visitor sign-in as separate products from separate vendors. Here they're built in alongside the MAR, stock and task boards.
+- **You can read the code.** For software handling clinical records, being able to audit exactly what it does is a feature in itself.
+
+**An honest note on where this fits:** in England, care homes that want NHS digitisation funding must choose a supplier from the [NHS Assured Solutions List](https://beta.digitisingsocialcare.co.uk/assured-solutions), and CareSync isn't on it (in-house and self-hosted systems don't have to be, but they don't unlock that funding either). If you're a home that needs an assured DSCR supplier, this isn't a replacement for one. If you're running your own system, learning, contributing, or digitising processes an assured platform doesn't cover — welcome.
 
 ## What it does
 
@@ -86,7 +98,7 @@ npm run test:ui    # Playwright UI mode
 
 ## Contributing
 
-I'd genuinely love help with this. I'm one person building something that care homes actually depend on, and more eyes on the code makes it safer for everyone.
+I'd genuinely love help with this. There's no open-source project serving UK residential care right now — this is an attempt to build one, and it's bigger than one person. More eyes on the code makes it safer for everyone who might rely on it.
 
 Good places to start:
 
@@ -128,6 +140,19 @@ PRs that break any of these won't be merged, even if everything else about them 
 
 You don't need to have worked in care to contribute, but a little context helps: **MAR** = Medication Administration Record, **CQC** = Care Quality Commission (the UK care regulator), **service user** = the person living in the home. If a term in the code doesn't make sense, ask in an issue — explaining it usually improves the code anyway.
 
+## Roadmap
+
+Rough order of what I'd like to tackle next — contributions welcome on any of these:
+
+- Harden the offline MAR sync (conflict handling when two tablets record the same round)
+- dm+d medication dictionary support, so meds are recorded against standard NHS codes
+- Import/export so a home can migrate in from paper or out to another system without losing history
+- Longer term: work through the NHS DSCR standards so a home running CareSync in-house meets the same bar as assured suppliers
+
+## A word of caution
+
+CareSync handles medication records. If you deploy it in a real care home, you are responsible for validating it against your own policies and your regulator's expectations — test it thoroughly with dummy data first, keep your paper process available as a fallback while you trial it, and remember that CQC will look harder at a self-hosted system than an assured one. Bug reports from real-world use are gold, but please don't bet a med round on an unreviewed build.
+
 ## License
 
-Not yet decided — if you want to use this for your own care home, get in touch first.
+A proper open-source license is being finalised. Until it lands, the code is source-available: read it, learn from it, open issues and PRs — but get in touch before deploying it commercially or for your own care home.
