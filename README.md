@@ -100,6 +100,8 @@ npm run test:ui    # Playwright UI mode
 
 I'd genuinely love help with this. There's no open-source project serving UK residential care right now — this is an attempt to build one, and it's bigger than one person. More eyes on the code makes it safer for everyone who might rely on it.
 
+The full guide is in [CONTRIBUTING.md](CONTRIBUTING.md) — including a care-jargon glossary for developers and ways to help that don't involve code. Security issues go through [SECURITY.md](SECURITY.md), never public issues.
+
 Good places to start:
 
 - **Bug reports** — if something looks wrong, open an issue. Even "this felt confusing on a tablet" is useful feedback.

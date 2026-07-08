@@ -1,0 +1,63 @@
+name: Bug report
+description: Something isn't working right
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Even "this felt confusing on a tablet" is useful — you don't need to know what caused it.
+
+        ⚠️ **If this is a security issue** (a way to see or change data you shouldn't be able to), please don't report it here — see [SECURITY.md](../../SECURITY.md) instead.
+  - type: dropdown
+    id: module
+    attributes:
+      label: Which part of the app?
+      options:
+        - Digital MAR (medication)
+        - Stock Manager
+        - Task Board / Handover
+        - Fire Safety Log
+        - Visitor Log
+        - Manager Dashboard
+        - Clients / Staff management
+        - Login / PIN / roles
+        - Offline / PWA behaviour
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, and what went wrong?
+      placeholder: "I recorded a medication as given, but the stock count didn't go down."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Could this affect resident safety or clinical records?
+      description: Bugs in medication recording, stock counts, or audit trails get priority.
+      options:
+        - "Yes — it touches medication, stock, or clinical records"
+        - "No — it's an inconvenience or cosmetic issue"
+        - "Not sure"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: "e.g. Samsung Galaxy Tab A9, Chrome 138, installed as PWA"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots help a lot. **Please blur or crop out any real resident or staff names first.**

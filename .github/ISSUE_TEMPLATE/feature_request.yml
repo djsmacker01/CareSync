@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest something CareSync should do
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas grounded in real care work are the most valuable ones. You don't need a technical solution — describing the problem is enough.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation on a shift where this would help.
+      placeholder: "During handover, the night staff can't easily see which PRN meds were given in the last 4 hours..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: What's your connection to care work?
+      description: Helps us weigh the suggestion — all perspectives welcome.
+      options:
+        - I work in care (staff / supervisor / manager)
+        - I'm a developer
+        - Both
+        - Neither, just interested
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Workarounds or alternatives you've considered

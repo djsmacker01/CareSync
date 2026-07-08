@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/djsmacker01/CareSync/security/advisories/new
+    about: Please report security issues privately here, never in a public issue.
+  - name: Question or discussion
+    url: https://github.com/djsmacker01/CareSync/discussions
+    about: Not sure it's a bug? Want to talk through an idea first? Start here.
