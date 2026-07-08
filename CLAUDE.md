@@ -1,4 +1,4 @@
-# CLAUDE.md — CareSync Project Memory
+# File.md — CareSync Project Memory
 
 > This file is read by Claude Code at the start of every session.
 > Always read this before writing any code.
