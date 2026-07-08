@@ -57,8 +57,8 @@ You'll need Node 18+ and a free [Supabase](https://supabase.com) project (**pick
 **1. Clone and install**
 
 ```bash
-git clone https://github.com/<your-username>/caresync.git
-cd caresync
+git clone https://github.com/djsmacker01/CareSync.git
+cd CareSync
 cd frontend && npm install
 cd ../backend && npm install
 ```
