@@ -155,4 +155,4 @@ CareSync handles medication records. If you deploy it in a real care home, you a
 
 ## License
 
-A proper open-source license is being finalised. Until it lands, the code is source-available: read it, learn from it, open issues and PRs — but get in touch before deploying it commercially or for your own care home.
+CareSync is licensed under the [GNU AGPL-3.0](LICENSE). In plain terms: you're free to use it, self-host it and modify it — including for your own care home — but if you run a modified version as a service for others, you must share your changes under the same license. That keeps improvements flowing back to everyone.

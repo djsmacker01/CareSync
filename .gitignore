@@ -30,3 +30,6 @@ npm-debug.log*
 AGENTS.md
 .claude/settings.local.json
 CLAUDE.md
+
+# Dev build artifacts
+frontend/dev-dist/
