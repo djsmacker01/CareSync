@@ -9,8 +9,13 @@ import { fileURLToPath } from 'url'
 
 const __dir = dirname(fileURLToPath(import.meta.url))
 
-const SUPABASE_URL = 'https://your-project.supabase.co'
-const SERVICE_ROLE_KEY = 'your-supabase-service-role-key'
+const SUPABASE_URL = process.env.SUPABASE_URL
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error('Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables first (see backend/.env.example)')
+  process.exit(1)
+}
 
 const migrations = [
   '001_users.sql',
