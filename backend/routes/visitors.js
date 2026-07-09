@@ -109,6 +109,48 @@ router.patch('/:id/sign-out', async (req, res, next) => {
   }
 })
 
+// ── GET /api/visitors/export?from=YYYY-MM-DD&to=YYYY-MM-DD — CSV export (manager + readonly)
+router.get('/export', requireRole('manager', 'readonly'), async (req, res, next) => {
+  try {
+    const { from, to } = req.query
+    if (!from || !to) {
+      return res.status(400).json({ error: 'from and to date query params are required.' })
+    }
+
+    const { data, error } = await supabase
+      .from('visitors')
+      .select(VISITOR_SELECT)
+      .gte('sign_in_time', `${from}T00:00:00Z`)
+      .lte('sign_in_time', `${to}T23:59:59Z`)
+      .order('sign_in_time', { ascending: true })
+
+    if (error) throw error
+
+    const header = ['Name', 'Visiting', 'Purpose', 'Sign-in time', 'Sign-out time', 'Signed in by']
+    const escape = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`
+
+    const rows = (data || []).map(v => [
+      v.visitor_name,
+      v.clients?.full_name || '',
+      v.purpose,
+      v.sign_in_time || '',
+      v.sign_out_time || '',
+      v.users?.full_name || '',
+    ].map(escape).join(','))
+
+    const csv = [header.map(escape).join(','), ...rows].join('\r\n')
+
+    // Audit trail: record who exported what range and when
+    console.log(`[audit] visitor_log_export by user=${req.user.id} (${req.user.full_name}) range=${from}..${to} rows=${rows.length}`)
+
+    res.setHeader('Content-Type', 'text/csv')
+    res.setHeader('Content-Disposition', `attachment; filename="visitor-log-${from}-to-${to}.csv"`)
+    res.status(200).send(csv)
+  } catch (err) {
+    next(err)
+  }
+})
+
 // ── DELETE /api/visitors/:id — manager only
 router.delete('/:id', requireRole('manager'), async (req, res, next) => {
   try {

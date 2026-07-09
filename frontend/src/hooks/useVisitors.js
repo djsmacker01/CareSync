@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+
 const VISITOR_SELECT = `
   id, visitor_name, purpose, sign_in_time, sign_out_time,
   clients!visitors_visiting_client_id_fkey(id, full_name, room_number),
@@ -102,10 +104,29 @@ export function useVisitors() {
     return data
   }, [])
 
+  const exportCsv = useCallback(async (from, to, token) => {
+    const res = await fetch(`${API}/api/visitors/export?from=${from}&to=${to}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.error || `HTTP ${res.status}`)
+    }
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `visitor-log-${from}-to-${to}.csv`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }, [])
+
   return {
     active, history, clients,
     loading, error,
     fetchAll, fetchActive, fetchHistory, fetchClients,
-    signIn, signOut,
+    signIn, signOut, exportCsv,
   }
 }
