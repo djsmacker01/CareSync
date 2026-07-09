@@ -5,7 +5,7 @@ import { useRealtime } from '../../hooks/useRealtime'
 import LiveBadge from '../../components/LiveBadge'
 import ActiveVisitorCard from '../../components/visitors/ActiveVisitorCard'
 import SignInModal from '../../components/visitors/SignInModal'
-import { CheckCircle2, User, ClipboardList } from 'lucide-react'
+import { CheckCircle2, User, ClipboardList, Download } from 'lucide-react'
 
 const VISITOR_SUBS = [{ table: 'visitors', event: '*' }]
 
@@ -32,19 +32,21 @@ function todayStr() {
 }
 
 export default function VisitorsPage() {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const {
     active, history, clients,
     loading, error,
-    fetchAll, signIn, signOut,
+    fetchAll, signIn, signOut, exportCsv,
   } = useVisitors()
 
   const [showModal, setShowModal]   = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast]           = useState(null)
   const [dateFilter, setDateFilter] = useState(todayStr())
+  const [exporting, setExporting]   = useState(false)
 
   const readonly = user?.role === 'readonly'
+  const canExport = user?.role === 'manager' || user?.role === 'readonly'
 
   const load = useCallback(() => fetchAll(dateFilter), [fetchAll, dateFilter])
 
@@ -78,6 +80,17 @@ export default function VisitorsPage() {
       showToast(`${v?.visitor_name || 'Visitor'} signed out`)
     } catch (err) {
       showToast(err.message, 'error')
+    }
+  }
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      await exportCsv(dateFilter, dateFilter, session?.access_token)
+    } catch (err) {
+      showToast(err.message, 'error')
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -170,13 +183,25 @@ export default function VisitorsPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h2 className="text-base font-bold text-gray-800">Visit history</h2>
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={e => setDateFilter(e.target.value)}
-            max={todayStr()}
-            className="min-h-[40px] rounded-xl border-2 border-gray-200 px-3 text-sm text-gray-700 focus:outline-none focus:border-teal transition-colors"
-          />
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={e => setDateFilter(e.target.value)}
+              max={todayStr()}
+              className="min-h-[40px] rounded-xl border-2 border-gray-200 px-3 text-sm text-gray-700 focus:outline-none focus:border-teal transition-colors"
+            />
+            {canExport && (
+              <button
+                onClick={handleExport}
+                disabled={exporting}
+                className="min-h-[40px] px-3 rounded-xl border-2 border-gray-200 text-sm font-bold text-gray-700 hover:border-teal hover:text-teal transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Download className="w-4 h-4" />
+                {exporting ? 'Exporting…' : 'Export CSV'}
+              </button>
+            )}
+          </div>
         </div>
 
         {history !== null && history.length === 0 && (
